@@ -10,8 +10,8 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 	 */
 	protected function _construct() {
 		$this->_init(
-			'Teck\TaskTracking\Model\Status',
-			'Teck\TaskTracking\Model\ResourceModel\Status'
+			'Tech\TaskTracking\Model\Status',
+			'Tech\TaskTracking\Model\ResourceModel\Status'
 		);
 	}
 }

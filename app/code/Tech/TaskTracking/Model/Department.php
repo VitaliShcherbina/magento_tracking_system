@@ -9,6 +9,6 @@ class Department extends \Magento\Framework\Model\AbstractModel {
 	 *
 	 */
 	protected function _construct() {
-		$this->_init('Teck\TaskTracking\Model\ResourceModel\Department');
+		$this->_init('Tech\TaskTracking\Model\ResourceModel\Department');
 	}
 }

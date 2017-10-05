@@ -9,6 +9,6 @@ class Priority extends \Magento\Framework\Model\AbstractModel {
 	 *
 	 */
 	protected function _construct() {
-		$this->_init('Teck\TaskTracking\Model\ResourceModel\Priority');
+		$this->_init('Tech\TaskTracking\Model\ResourceModel\Priority');
 	}
 }

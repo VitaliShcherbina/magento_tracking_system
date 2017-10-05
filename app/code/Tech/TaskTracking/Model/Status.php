@@ -9,6 +9,6 @@ class Status extends \Magento\Framework\Model\AbstractModel {
 	 *
 	 */
 	protected function _construct() {
-		$this->_init('Teck\TaskTracking\Model\ResourceModel\Status');
+		$this->_init('Tech\TaskTracking\Model\ResourceModel\Status');
 	}
 }

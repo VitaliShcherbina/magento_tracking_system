@@ -9,6 +9,6 @@ class Ticket extends \Magento\Framework\Model\AbstractModel {
 	 *
 	 */
 	protected function _construct() {
-		$this->_init('Teck\TaskTracking\Model\ResourceModel\Ticket');
+		$this->_init('Tech\TaskTracking\Model\ResourceModel\Ticket');
 	}
 }
