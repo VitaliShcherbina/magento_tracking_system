@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+	/**
+	 * Menu Items in admin
+	 */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+	<menu>
+		<add id="Tech_TaskTracking::tracking" title="Task Tracking" translate="title" module="Tech_TaskTracking" sortOrder="30" resource="Magento_Backend::content"/>
+		<add id="Tech_TaskTracking::department" title="Departments" translate="title" module="Tech_TaskTracking" sortOrder="10" parent="Tech_TaskTracking::tracking" action="tasktracking/department/index" resource="Tech_TaskTracking::tracking"/>
+		<add id="Tech_TaskTracking::status" title="Statuses" translate="title" module="Tech_TaskTracking" sortOrder="20" parent="Tech_TaskTracking::tracking" action="tasktracking/status/index" resource="Tech_TaskTracking::tracking"/>
+		<add id="Tech_TaskTracking::priority" title="Priority" translate="title" module="Tech_TaskTracking" sortOrder="30" parent="Tech_TaskTracking::tracking" action="tasktracking/priority/index" resource="Tech_TaskTracking::tracking"/>
+	</menu>
+</config>
