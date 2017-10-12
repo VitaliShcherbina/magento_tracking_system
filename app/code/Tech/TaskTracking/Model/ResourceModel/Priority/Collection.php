@@ -8,6 +8,11 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 	/**
 	 *
 	 */
+	protected $_idFieldName = 'priority_id';
+	
+	/**
+	 *
+	 */
 	protected function _construct() {
 		$this->_init(
 			'Tech\TaskTracking\Model\Priority',

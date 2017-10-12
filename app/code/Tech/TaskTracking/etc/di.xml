@@ -5,6 +5,7 @@
 			<argument name="collections" xsi:type="array">
 				<item name="department_listing_data_source" xsi:type="string">Tech\TaskTracking\Model\ResourceModel\Department\Grid\Collection</item>
 				<item name="status_listing_data_source" xsi:type="string">Tech\TaskTracking\Model\ResourceModel\Status\Grid\Collection</item>
+				<item name="priority_listing_data_source" xsi:type="string">Tech\TaskTracking\Model\ResourceModel\Priority\Grid\Collection</item>
 			</argument>
 		</arguments>
 	</type>
