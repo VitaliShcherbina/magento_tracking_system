@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+	<argument name="data" xsi:type="array">
+		<item name="js_config" xsi:type="array">
+			<item name="provider" xsi:type="string">status_listing.status_listing_data_source</item>
+			<item name="deps" xsi:type="string">status_listing.status_listing_data_source</item>
+		</item>
+		<item name="spinner" xsi:type="string">status_columns</item>
+		<item name="buttons" xsi:type="array">
+			<item name="add" xsi:type="array">
+				<item name="name" xsi:type="string">add</item>
+				<item name="label" xsi:type="string" translate="true">Add Status</item>
+				<item name="class" xsi:type="string">primary</item>
+				<item name="url" xsi:type="string">*/*/new</item>
+			</item>
+		</item>
+	</argument>
+	<dataSource name="status_listing_data_source">
+		<argument name="dataProvider" xsi:type="configurableObject">
+			<argument name="class" xsi:type="string">Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider</argument>
+			<argument name="name" xsi:type="string">status_listing_data_source</argument>
+			<argument name="primaryFieldName" xsi:type="string">status_id</argument>
+			<argument name="requestFieldName" xsi:type="string">id</argument>
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+					<item name="update_url" xsi:type="url" path="mui/index/render"/>
+					<item name="storageConfig" xsi:type="array">
+						<item name="indexField" xsi:type="string">status_id</item>
+					</item>
+				</item>
+			</argument>
+		</argument>
+	</dataSource>
+	<listingToolbar name="listing_top">
+		<argument name="data" xsi:type="array">
+			<item name="config" xsi:type="array">
+				<item name="sticky" xsi:type="boolean">true</item>
+			</item>
+		</argument>
+		<bookmark name="bookmarks"/>
+		<columnsControls name="columns_controls"/>
+		<filters name="listing_filters">
+			<settings>
+				<templates>
+					<filters>
+						<select>
+							<param name="template" xsi:type="string">ui/grid/filters/elements/ui-select</param>
+							<param name="component" xsi:type="string">Magento_Ui/js/form/element/ui-select</param>
+						</select>
+					</filters>
+				</templates>
+			</settings>
+			<filterSelect name="store_id" provider="${ $.parentName }">
+				<settings>
+					<captionValue>0</captionValue>
+					<options class="Tech\TaskTracking\Ui\Component\Listing\Column\Options"/>
+					<label translate="true">Store View</label>
+					<dataScope>store_id</dataScope>
+					<imports>
+						<link name="visible">componentType = column, index = ${ $.index }:visible</link>
+					</imports>
+				</settings>
+			</filterSelect>
+		</filters>
+		<massaction name="listing_massaction">
+			<action name="delete">
+				<settings>
+					<confirm>
+						<message translate="true">Are you sure you want to delete selected items?</message>
+						<title translate="true">Delete items</title>
+					</confirm>
+					<url path="tasktracking/status/massDelete"/>
+					<type>delete</type>
+					<label translate="true">Delete</label>
+				</settings>
+			</action>
+		</massaction>
+		<paging name="listing_paging"/>
+		<exportButton name="export_button"/>
+	</listingToolbar>
+	<columns name="status_columns">
+		<settings>
+			<childDefaults>
+				<param name="fieldAction" xsi:type="array">
+					<item name="provider" xsi:type="string">status_listing.status_listing.status_columns.actions</item>
+					<item name="target" xsi:type="string">applyAction</item>
+					<item name="params" xsi:type="array">
+						<item name="0" xsi:type="string">edit</item>
+						<item name="1" xsi:type="string">${ $.$data.rowIndex }</item>
+					</item>
+				</param>
+			</childDefaults>
+		</settings>
+		<selectionsColumn name="ids">
+			<settings>
+				<indexField>status_id</indexField>
+			</settings>
+		</selectionsColumn>
+		<column name="status_id">
+			<settings>
+				<filter>textRange</filter>
+				<label translate="true">ID</label>
+				<sorting>asc</sorting>
+			</settings>
+		</column>
+		<column name="status_value">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="editor" xsi:type="string">text</item>
+					<item name="filter" xsi:type="string">text</item>
+					<item name="label" xsi:type="string" translate="true">Status</item>
+				</item>
+			</argument>
+		</column>
+		<column name="is_active">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Magento\Cms\Model\Block\Source\IsActive</item>
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">select</item>
+					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+					<item name="editor" xsi:type="string">select</item>
+					<item name="filter" xsi:type="string">select</item>
+					<item name="label" xsi:type="string" translate="true">Status</item>
+				</item>
+			</argument>
+		</column>
+		<actionsColumn name="actions" class="Tech\TaskTracking\Ui\Component\Listing\Column\StatusActions">
+			<settings>
+				<indexField>status_id</indexField>
+			</settings>
+		</actionsColumn>
+	</columns>
+</listing>
