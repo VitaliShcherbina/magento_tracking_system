@@ -8,8 +8,8 @@ class Index extends \Magento\Backend\App\Action {
 	 */
 	
 	const ACL_RESOURCE = 'Tech_TaskTracking::tracking';
-	const MENU_ITEM        = 'Tech_TaskTracking::tracking';
-	const TITLE                  = 'Departments';
+	const MENU_ITEM    = 'Tech_TaskTracking::tracking';
+	const TITLE        = 'Departments';
 	
 	protected $resultPageFactory;
 	

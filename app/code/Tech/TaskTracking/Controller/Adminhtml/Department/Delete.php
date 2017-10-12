@@ -17,7 +17,7 @@ class Delete extends \Magento\Backend\App\Action {
 				$model->load($id);
 				$model->delete();
 				// display success message
-				$this->messageManager->addSuccess(__('You deleted the block.'));
+				$this->messageManager->addSuccess(__('You deleted the department.'));
 				// go to grid
 				return $resultRedirect->setPath('*/*/');
 			} catch (\Exception $e) {
@@ -28,7 +28,7 @@ class Delete extends \Magento\Backend\App\Action {
 			}
 		}
 		// display error message
-		$this->messageManager->addError(__('We can\'t find a block to delete.'));
+		$this->messageManager->addError(__('We can\'t find a department to delete.'));
 		// go to grid
 		return $resultRedirect->setPath('*/*/');
 	}

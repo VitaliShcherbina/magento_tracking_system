@@ -6,9 +6,9 @@ class Edit extends \Magento\Backend\App\Action {
 	/**
 	 * 
 	 */
-	const MENU_ITEM = 'Tech_TaskTracking::tracking';
+	const MENU_ITEM  = 'Tech_TaskTracking::tracking';
 	const TITLE_NEW  = 'New Department';
-	const TITLE_EDIT  = 'Edit Department';
+	const TITLE_EDIT = 'Edit Department';
 	
 	protected $resultPageFactory;
 	protected $_coreRegistry;
@@ -40,7 +40,7 @@ class Edit extends \Magento\Backend\App\Action {
 		if ($id) {
 			$model->load($id);
 			if (!$model->getId()) {
-				$this->messageManager->addError(__('This block no longer exists.'));
+				$this->messageManager->addError(__('This department no longer exists.'));
 				
 				$resultRedirect = $this->resultRedirectFactory->create();
 				
