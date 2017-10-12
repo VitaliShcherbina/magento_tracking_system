@@ -13,7 +13,7 @@ class DepartmentActions extends Column {
 	/**
 	 * 
 	 */
-	const URL_PATH_EDIT       = 'tasktracking/department/edit';
+	const URL_PATH_EDIT    = 'tasktracking/department/edit';
 	const URL_PATH_DELETE  = 'tasktracking/department/delete';
 	
 	protected $urlBuilder;
