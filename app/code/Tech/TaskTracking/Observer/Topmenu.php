@@ -17,7 +17,7 @@ class Topmenu implements ObserverInterface {
 		$data = [
 			'name'      => __('Tickets'),
 			'id'        => 'task_tickets',
-			'url'       => 'tasktracking/ticket/list',
+			'url'       => 'tasktracking/ticket/index',
 			'is_active' => 0
 		];
 		$node = new Node($data, 'id', $tree, $menu);
