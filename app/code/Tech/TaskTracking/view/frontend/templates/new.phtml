@@ -1,0 +1,23 @@
+<?php $departments = $block->getDepartmentCollection(); ?>
+<div class="tracking_wrap">
+	<form action="<?php echo $block->getNextAction() ?>" method="post" data-mage-init='{"validation": {}}'>
+		<?php foreach ($departments as $department): ?>
+			<p>
+				<input type="radio" name="department_id"
+					   id="<?php echo mb_strtolower($department->getDepartmentName() . '_' . $department->getDepartmentId()); ?>"
+					   data-validate="{required:true, 'validate-one-required-by-name':true}"
+					   value="<?php echo $department->getDepartmentId(); ?>" >
+				<label for="<?php echo mb_strtolower($department->getDepartmentName() . '_' . $department->getDepartmentId()); ?>">
+					<?php echo $department->getDepartmentName(); ?>
+				</label>
+			</p>
+		<?php endforeach; ?>
+		<div class="actions-toolbar">
+			<div class="primary">
+				<button type="submit" title="Submit" class="action submit primary">
+					<span><?php echo __('Next'); ?></span>
+				</button>
+			</div>
+		</div>
+	</form>
+</div>

@@ -2,11 +2,11 @@
 
 namespace Tech\TaskTracking\Controller\Ticket;
 
-class Index extends \Magento\Framework\App\Action\Action {
+class NewTicket extends \Magento\Framework\App\Action\Action {
 	/**
 	 *
 	 */
-	protected $resultPageFactory;
+	protected $_resultPageFactory;
 	protected $_session;
 	
 	/**
@@ -17,7 +17,7 @@ class Index extends \Magento\Framework\App\Action\Action {
 		\Magento\Framework\View\Result\PageFactory $resultPageFactory,
 		\Magento\Customer\Model\Session $session
 	) {
-		$this->resultPageFactory = $resultPageFactory;
+		$this->_resultPageFactory = $resultPageFactory;
 		$this->_session = $session;
 		parent::__construct($context);
 	}
@@ -30,12 +30,11 @@ class Index extends \Magento\Framework\App\Action\Action {
 		$resultRedirect = $this->resultRedirectFactory->create();
 		
 		if ($this->_session->isLoggedIn()) {
-			return $this->resultPageFactory->create();
+			return $this->_resultPageFactory->create();
 		} else {
 			$this->messageManager->addNoticeMessage(__('You must be logged in to view this page.'));
 			
 			return $resultRedirect->setPath('customer/account/login');
 		}
-		
 	}
 }

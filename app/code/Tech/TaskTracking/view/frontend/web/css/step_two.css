@@ -1,0 +1,10 @@
+.remove_attachment {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	background-image: url('../images/remove.png');
+	background-repeat: no-repeat;
+	background-size: contain;
+	cursor: pointer;
+	vertical-align: bottom;
+}

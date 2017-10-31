@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 	<head>
-		<title>Tickets</title>
+		<title>Select Department</title>
 	</head>
 	<body>
 		<referenceContainer name="content">
-			<block class="Tech\TaskTracking\Block\Ticket\Index" name="user.tracker" template="Tech_TaskTracking::index.phtml"/>
+			<block class="Tech\TaskTracking\Block\Ticket\NewTicket" name="ticket.new" template="Tech_TaskTracking::new.phtml"/>
 		</referenceContainer>
 	</body>
 </page>

@@ -2,7 +2,9 @@
 
 namespace Tech\TaskTracking\Controller\Ticket;
 
-class Index extends \Magento\Framework\App\Action\Action {
+use Tech\TaskTracking\Model\Status;
+
+class StepTwo extends \Magento\Framework\App\Action\Action {
 	/**
 	 *
 	 */
@@ -30,12 +32,24 @@ class Index extends \Magento\Framework\App\Action\Action {
 		$resultRedirect = $this->resultRedirectFactory->create();
 		
 		if ($this->_session->isLoggedIn()) {
-			return $this->resultPageFactory->create();
-		} else {
+			$id = $this->getRequest()->getParam('department_id');
+			
+			if (!$id && !is_numeric($id)) {
+				$this->messageManager->addError(__('Please select the Department.'));
+				
+				return $resultRedirect->setPath('*/*/newticket');
+			}
+			$resultPage = $this->resultPageFactory->create();
+			$resultPage->getLayout()->getBlock('ticket.step.two')
+										->setDepartmentId($id)
+										->setStatusId(Status::DEFAULT_STATUS_ID);
+			
+			return $resultPage;
+		}
+		else {
 			$this->messageManager->addNoticeMessage(__('You must be logged in to view this page.'));
 			
 			return $resultRedirect->setPath('customer/account/login');
 		}
-		
 	}
 }

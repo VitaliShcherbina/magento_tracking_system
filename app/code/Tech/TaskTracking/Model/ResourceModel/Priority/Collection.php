@@ -19,4 +19,12 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 			'Tech\TaskTracking\Model\ResourceModel\Priority'
 		);
 	}
+	
+	
+	/**
+	 *
+	 */
+	public function toOptionArray() {
+		return parent::_toOptionArray('priority_id', 'priority_value');
+	}
 }

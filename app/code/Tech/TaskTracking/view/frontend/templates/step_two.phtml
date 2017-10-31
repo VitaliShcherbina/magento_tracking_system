@@ -1,0 +1,54 @@
+<?php $priorities = $block->getPriorityData(); ?>
+<div class="tracking_wrap">
+	<div class="title">
+		<h2><?php echo $block->getDepartmentNameById($this->getDepartmentId()); ?></h2>
+	</div>
+	<form action="<?php echo $block->getSubmitAction(); ?>" method="post" class="ticket_form" enctype="multipart/form-data" data-mage-init='{"validation": {}}'>
+		<fieldset class="fieldset">
+			<input type="hidden" name="department_id" value="<?php echo $this->getDepartmentId(); ?>">
+			<input type="hidden" name="status_id" value="<?php echo $this->getStatusId(); ?>">
+			<p>
+				<label for="ticket_priority"><?php echo __('Priority'); ?></label>
+				<select id="ticket_priority" name="priority_id" data-validate="{required:true, 'validate-select':true}">
+					<?php foreach ($priorities as $priority): ?>
+						<option value="<?php echo $priority['value']; ?>"><?php echo $priority['label']; ?></option>
+					<?php endforeach; ?>
+				</select>
+			</p>
+			<p>
+				<label for="user_email"><?php echo __('Email'); ?></label>
+				<input type="email" id="user_email" name="email" data-validate="{required:true, 'validate-email':true}" placeholder="<?php echo __('Email Address'); ?>">
+			</p>
+			<p>
+				<label for="user_message"><?php echo __('Message'); ?></label>
+				<textarea id="user_message" name="message_text" data-validate="{required:true}" placeholder="<?php echo __('Message'); ?>"></textarea>
+			</p>
+			<p id="wrap_inputs" data-bind="scope:'inputgroup'">
+				<label><?php echo __('Upload File'); ?></label>
+				<a href="#" id="add_input" data-bind="click: add"><?php echo __('Add File'); ?></a>
+				<div class="upload_inputs"></div>
+			</p>
+			<div class="actions-toolbar">
+				<div class="primary">
+					<button type="submit" title="Submit" class="action submit primary">
+						<span><?php echo __('Submit'); ?></span>
+					</button>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+<script type="text/x-magento-init">
+	{
+		"#wrap_inputs": {
+			"Magento_Ui/js/core/app": {
+				"components": {
+					"inputgroup": {
+						"component": "Tech_TaskTracking/js/addInput"
+					}
+				}
+			},
+			"removeinput": {}
+		}
+	}
+</script>
