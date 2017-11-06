@@ -2,4 +2,24 @@
 	<div class="add_new">
 		<a href="<?php echo $block->getUrl('*/*/newticket'); ?>"><?php echo __('Add New Ticket'); ?></a>
 	</div>
+	<div id="tickets_table_wrap" class="tickets_grid" data-bind="scope: 'tech-grid'">
+		<!-- ko template: getTemplate() --><!-- /ko -->
+		<script type="text/x-magento-init">
+			{
+				"#tickets_table_wrap": {
+					"Magento_Ui/js/core/app": {
+						"components": {
+							"tech-grid": {
+								"component": "Tech_TaskTracking/js/view/grid",
+								"config": {
+									"ticketsGridData": <?php echo /* @noEscape */ $block->getTicketsDataForUser(); ?>,
+									"ticketGridViewUrl": "<?php echo /* @noEscape */ $block->getUrl('tasktracking/ticket/view'); ?>"
+								}
+							}
+						}
+					}
+				}
+			}
+		</script>
+	</div>
 </div>

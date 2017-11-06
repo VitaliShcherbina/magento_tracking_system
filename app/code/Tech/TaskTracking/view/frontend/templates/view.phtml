@@ -1,0 +1,106 @@
+<?php $ticketData = $block->getTicketDataById($this->getTicketId()); ?>
+<div class="ticket_view_wrap">
+	<div class="ticket_head separated">
+		<h2><?php echo __("Details"); ?></h2>
+		<p>
+			<span><?php echo __("Ticket ID:"); ?><span class="head_value"><?php echo $ticketData['ticket_id']; ?></span></span>
+			<span><?php echo __("Status:"); ?><span class="head_value"><?php echo $ticketData['status_value']; ?></span></span>
+		</p>
+		<p>
+			<span><?php echo __("Department:"); ?><span class="head_value"><?php echo $ticketData['department_name']; ?></span></span>
+			<span><?php echo __("Priority:"); ?><span class="head_value"><?php echo $ticketData['priority_value']; ?></span></span>
+		</p>
+		<p>
+			<span><?php echo __("Created:"); ?><span class="head_value"><?php echo $ticketData['created_at']; ?></span></span>
+			<span><?php echo __("Updated:"); ?><span class="head_value"><?php echo $ticketData['updated_at']; ?></span></span>
+		</p>
+	</div>
+	<div class="post_message_wrap separated">
+		<h2>
+			<?php echo __("Post reply"); ?>
+		</h2>
+		<form action="<?php echo $block->getSubmitAction(); ?>" method="post" enctype="multipart/form-data" data-mage-init='{"validation": {}}'>
+			<fieldset class="fieldset">
+				<input type="hidden" name="ticket_id" value="<?php echo $ticketData['ticket_id']; ?>">
+				<p>
+					<label for="user_message"><?php echo __('Message'); ?></label>
+					<textarea id="user_message" name="message_text" data-validate="{required:true}" placeholder="<?php echo __('Message'); ?>"></textarea>
+				</p>
+				<p id="wrap_inputs" data-bind="scope:'inputgroup'">
+					<label><?php echo __('Upload File'); ?></label>
+					<a href="#" id="add_input" data-bind="click: add"><?php echo __('Add File'); ?></a>
+					<div class="upload_inputs"></div>
+				</p>
+				<div class="actions-toolbar">
+					<div class="primary">
+						<button type="submit" title="Submit" class="action submit primary">
+							<span><?php echo __('Submit'); ?></span>
+						</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<div class="message_history_wrap">
+		<h2>
+			<?php echo __("Message history"); ?>
+		</h2>
+		<div class="message_content">
+			<?php if(array_key_exists('messages_data', $ticketData)): ?>
+				<?php $counter = count($ticketData['messages_data']); ?>
+				
+				<?php foreach ($ticketData['messages_data'] as $messageData): ?>
+					<div class="message_item">
+						<p>
+							<?php echo $counter . '.'; ?><span><?php echo $messageData['created_at']; ?></span>
+							<span>|</span>
+							<span><?php echo (array_key_exists('admin_name', $messageData) ? $messageData['admin_name'] : $ticketData['customer_name']); ?></span>
+						</p>
+						<p class="message_text">
+							<?php echo $messageData['message_text']; ?>
+						</p>
+						<?php if ($messageData['attachment'] != ''): ?>
+							<div class="attachments">
+								<h3><?php echo __("Attachments"); ?></h3>
+								<?php $attachments = $block->decodeData($messageData['attachment']); ?>
+								<?php if($attachments and is_array($attachments)): ?>
+									<?php foreach ($attachments as $attachment): ?>
+										<p>
+											<a href="#" class="show_attachment"><?php echo $attachment; ?></a>
+										</p>
+									<?php endforeach; ?>
+								<?php endif;?>
+							</div>
+						<?php endif; ?>
+						<?php $counter--; ?>
+					</div>
+				<?php endforeach; ?>
+			<?php else: ?>
+				<p>
+					<span><?php echo __("No Messages."); ?></span>
+				</p>
+			<?php endif; ?>
+		</div>
+	</div>
+</div>
+<div id="attachment_popup" class="attachment_popup"></div>
+<script type="text/x-magento-init">
+	{
+		"#wrap_inputs": {
+			"Magento_Ui/js/core/app": {
+				"components": {
+					"inputgroup": {
+						"component": "Tech_TaskTracking/js/addInput"
+					}
+				}
+			},
+			"removeinput": {}
+		},
+		".show_attachment": {
+			"Tech_TaskTracking/js/popup": {}
+		}
+	}
+</script>
+<script type="text/javascript">
+	window.attachmentUrl = "<?php echo $block->getAttachmentUrlByTicketId($ticketData['ticket_id']); ?>";
+</script>

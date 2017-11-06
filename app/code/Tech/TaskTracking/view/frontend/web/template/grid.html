@@ -1,0 +1,34 @@
+<table class="data table base list">
+	<colgroup width="8%">
+	<colgroup width="21%">
+	<colgroup width="21%">
+	<colgroup width="20%">
+	<colgroup width="20%">
+	<colgroup width="10%">
+	<thead>
+		<tr data-bind="foreach: columns">
+		<th data-bind="text: headerText"></th>
+		</tr>
+	</thead>
+	<!-- ko ifnot: message -->
+	<tbody data-bind="foreach: items">
+		<tr data-bind="foreach: columns">
+			<!-- ko if: renderer -->
+			<td data-bind="html: renderer.render($parent)"></td>
+			<!-- /ko -->
+			<!-- ko ifnot: renderer -->
+			<td>
+				<span data-bind="text: $parent[rowText]"></span>
+			</td>
+			<!-- /ko -->
+		</tr>
+	</tbody>
+	<!-- /ko -->
+	<!-- ko if: message -->
+	<tbody>
+		<tr>
+			<td colspan="6" data-bind="text: message"></td>
+		</tr>
+	</tbody>
+	<!-- /ko -->
+</table>

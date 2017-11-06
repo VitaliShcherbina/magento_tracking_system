@@ -1,0 +1,33 @@
+@import "step_two.css";
+
+.tasktracking-ticket-view .ticket_view_wrap {
+	max-width: 400px;
+	margin: 0 auto;
+}
+.message_item {
+	padding: 20px 0;
+	border-bottom: 2px solid #cccccc;
+}
+.separated {
+	padding-bottom: 30px;
+	border-bottom: 2px solid #333333;
+}
+.ticket_head p > span:nth-child(odd){
+	width: 200px;
+	display: inline-block;
+}
+.ticket_head .head_value {
+	margin-left: 10px;
+}
+.attachment_popup {
+	display: none;
+}
+.attachment_image {
+	max-width: 100%;
+	margin: 0 auto;
+	display: block;
+	max-height: 500px;
+}
+.attachments h3:after {
+	content: ':';
+}

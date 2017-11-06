@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 	<head>
-		<css src="Tech_TaskTracking::css/index_page.css"/>
-		<title>Tickets</title>
+		<css src="Tech_TaskTracking::css/view.css"/>
 	</head>
 	<body>
 		<referenceContainer name="content">
-			<block class="Tech\TaskTracking\Block\Ticket\Index" name="user.tracker" cacheable="false" template="Tech_TaskTracking::index.phtml" />
+			<block class="Tech\TaskTracking\Block\Ticket\View" name="user.ticket" template="Tech_TaskTracking::view.phtml" />
 		</referenceContainer>
 	</body>
 </page>

@@ -1,0 +1,34 @@
+.tracking_wrap .add_new {
+	margin-bottom: 20px;
+}
+.tracking_wrap .add_new a,
+.tickets_grid td a {
+	color: #333333;
+	text-transform: uppercase;
+	text-decoration: none;
+}
+.tracking_wrap .add_new a:hover,
+.tickets_grid td a:hover {
+	color: #757575;
+}
+.tickets_grid {
+	border: 2px solid #333333;
+}
+.tickets_grid thead {
+	background-color: #b7b9bc;
+}
+.tickets_grid thead, .tickets_grid tr {
+	border-bottom: 2px solid #333333;
+}
+.tickets_grid tr:last-child {
+	border-bottom: 0;
+}
+.tickets_grid tr:nth-child(even) {
+	background-color: #d4d7db;
+}
+.tickets_grid th, .tickets_grid td {
+	border-right: 2px solid #333333;
+}
+.tickets_grid th:last-child, .tickets_grid td:last-child {
+	border-right: 0;
+}
