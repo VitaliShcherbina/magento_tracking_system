@@ -19,6 +19,7 @@ class MessageSave extends \Magento\Backend\App\Action {
 	protected $_mediaDirectory;
 	protected $_fileUploaderFactory;
 	protected $_dateFactory;
+	protected $_ticketFactory;
 	
 	/**
 	 *
@@ -30,7 +31,8 @@ class MessageSave extends \Magento\Backend\App\Action {
 		\Magento\Framework\Filesystem $filesystem,
 		\Magento\MediaStorage\Model\File\UploaderFactory $fileUploaderFactory,
 		\Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory,
-		\Tech\TaskTracking\Model\MessageFactory $messageFactory
+		\Tech\TaskTracking\Model\MessageFactory $messageFactory,
+		\Tech\TaskTracking\Model\TicketFactory $ticketFactory
 	)
 	{
 		$this->_coreRegistry        = $registry;
@@ -39,6 +41,7 @@ class MessageSave extends \Magento\Backend\App\Action {
 		$this->_fileUploaderFactory = $fileUploaderFactory;
 		$this->_dateFactory         = $dateFactory;
 		$this->_messageFactory      = $messageFactory;
+		$this->_ticketFactory       = $ticketFactory;
 		parent::__construct($context);
 	}
 	
@@ -89,6 +92,9 @@ class MessageSave extends \Magento\Backend\App\Action {
 			try {
 				$messageModel->save();
 				$this->_dataPersistor->clear('tasktracking_message');
+				$ticketModel = $this->_ticketFactory->create()->load($message['ticket_id']);
+				$ticketModel->setUpdatedAt($currentDate);
+				$ticketModel->save();
 			} catch (LocalizedException $e) {
 				$this->messageManager->addErrorMessage($e->getMessage());
 			} catch (\Exception $e) {

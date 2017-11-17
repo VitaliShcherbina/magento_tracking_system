@@ -18,6 +18,8 @@ class MessageSave extends \Magento\Framework\App\Action\Action {
 	protected $_mediaDirectory;
 	protected $_fileUploaderFactory;
 	protected $_dateFactory;
+	protected $_messageFactory;
+	protected $_ticketFactory;
 	
 	/**
 	 *
@@ -29,7 +31,9 @@ class MessageSave extends \Magento\Framework\App\Action\Action {
 		DataPersistorInterface $dataPersistor,
 		\Magento\Framework\Filesystem $filesystem,
 		\Magento\MediaStorage\Model\File\UploaderFactory $fileUploaderFactory,
-		\Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory
+		\Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory,
+		\Tech\TaskTracking\Model\MessageFactory $messageFactory,
+		\Tech\TaskTracking\Model\TicketFactory $ticketFactory
 	) {
 		$this->_resultPageFactory   = $resultPageFactory;
 		$this->_session             = $session;
@@ -37,6 +41,8 @@ class MessageSave extends \Magento\Framework\App\Action\Action {
 		$this->_mediaDirectory      = $filesystem->getDirectoryWrite(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA);
 		$this->_fileUploaderFactory = $fileUploaderFactory;
 		$this->_dateFactory         = $dateFactory;
+		$this->_messageFactory      = $messageFactory;
+		$this->_ticketFactory       = $ticketFactory;
 		parent::__construct($context);
 	}
 	
@@ -50,7 +56,7 @@ class MessageSave extends \Magento\Framework\App\Action\Action {
 		if ($this->_session->isLoggedIn()) {
 			$data = $this->getRequest()->getPostValue();
 			
-			if ($data['ticket_id']) {
+			if ($data and $data['ticket_id']) {
 				$attachments = $this->getRequest()->getFiles('attachment');
 				
 				$uploadedFileNames = array();
@@ -84,11 +90,14 @@ class MessageSave extends \Magento\Framework\App\Action\Action {
 					$messageData['attachment'] = null;
 				}
 				
-				$messageModel = $this->_objectManager->create(\Tech\TaskTracking\Model\Message::class)->load(null);
+				$messageModel = $this->_messageFactory->create()->load(null);
 				$messageModel->setData($messageData);
 				try {
 					$messageModel->save();
 					$this->_dataPersistor->clear('tasktracking_message');
+					$ticketModel = $this->_ticketFactory->create()->load($data['ticket_id']);
+					$ticketModel->setUpdatedAt($currentDate);
+					$ticketModel->save();
 				} catch (LocalizedException $e) {
 					$this->messageManager->addErrorMessage($e->getMessage());
 				} catch (\Exception $e) {
