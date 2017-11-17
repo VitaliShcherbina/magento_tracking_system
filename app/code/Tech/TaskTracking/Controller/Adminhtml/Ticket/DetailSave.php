@@ -54,14 +54,13 @@ class DetailSave extends \Magento\Backend\App\Action {
 				$ticketModel->setUpdatedAt($currentDate);
 				try {
 					$ticketModel->save();
+					$success = true;
+					$message = __('Ticket ' . $request['ticket_id'] . ' successfully saved.');
 				} catch (LocalizedException $e) {
 					$message = $e->getMessage();
 				} catch (\Exception $e) {
 					$message = __('Something went wrong while saving the ticket.');
 				}
-				
-				$success = true;
-				$message = __('Ticket ' . $request['ticket_id'] . ' successfully saved.');
 			}
 		}
 		else {
