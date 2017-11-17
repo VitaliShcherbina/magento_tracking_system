@@ -19,4 +19,12 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 			'Tech\TaskTracking\Model\ResourceModel\Department'
 		);
 	}
+	
+	
+	/**
+	 *
+	 */
+	public function toOptionArray() {
+		return parent::_toOptionArray('department_id', 'department_name');
+	}
 }

@@ -1,0 +1,117 @@
+<?php $ticketData  = $block->getTicketDataById($this->getTicketId()); ?>
+<?php $helper      = $block->getDataHelper(); ?>
+<?php $priorities  = $helper->getPriorityData(); ?>
+<?php $departments = $helper->getDepartmentData(); ?>
+<?php $statuses    = $helper->getStatusData(); ?>
+
+<div class="ticket_head separated">
+	<div class="t_title">
+		<h2><?php echo __("Ticket's title"); ?></h2>
+		<div class="t_info clearfix">
+			<h2><?php echo __("Customer information"); ?></h2>
+			<p>
+				<span><?php echo __("Name:"); ?><span><?php echo $ticketData['customer_name']; ?></span></span>
+				<span><?php echo __("Email:"); ?><span><?php echo $ticketData['email']?></span></span>
+			</p>
+		</div>
+	</div>
+	<div class="t_details">
+		<div class="ticket_messages"></div>
+		<h2><?php echo __("Ticket details"); ?></h2>
+		<form id="ticket_details_form">
+			<input type="hidden" name="form_key" value="<?php echo $block->getFormKey();?>">
+			<input type="hidden" name="ticket_id" value="<?php echo $ticketData['ticket_id']; ?>">
+			<p>
+				<p><?php echo __('Priority:'); ?></p>
+				<select id="ticket_priority" name="priority_id" data-validate="{required:true, 'validate-select':true}">
+					<?php foreach ($priorities as $priority): ?>
+						<option value="<?php echo $priority['value']; ?>" <?php echo ($ticketData['priority_id'] == $priority['value']) ? 'selected' : ''; ?>><?php echo $priority['label']; ?></option>
+					<?php endforeach; ?>
+				</select>
+			</p>
+			<p>
+				<p><?php echo __("Department:"); ?></p>
+				<select id="ticket_department" name="department_id" data-validate="{required:true, 'validate-select':true}">
+					<?php foreach ($departments as $department): ?>
+						<option value="<?php echo $department['value']; ?>" <?php echo ($ticketData['department_id'] == $department['value']) ? 'selected' : ''; ?>><?php echo $department['label']; ?></option>
+					<?php endforeach; ?>
+				</select>
+			</p>
+			<p>
+				<p><?php echo __("Status:"); ?></p>
+				<select id="ticket_status" name="status_id" data-validate="{required:true, 'validate-select':true}">
+					<?php foreach ($statuses as $status): ?>
+						<option value="<?php echo $status['value']; ?>" <?php echo ($ticketData['status_id'] == $status['value']) ? 'selected' : ''; ?>><?php echo $status['label']; ?></option>
+					<?php endforeach; ?>
+				</select>
+			</p>
+			<p>
+				<button type="submit" disabled><?php echo __("Save"); ?></button>
+			</p>
+		</form>
+	</div>
+</div>
+<script>
+	require([
+		'jquery',
+		'underscore'
+	], function($, _) {
+	//<![CDATA[
+		var form      = $("#ticket_details_form");
+		var initData  = form.serializeArray();
+		var btnSubmit = form.find("button");
+		
+		$(document).on('change','.t_details select', function () {
+			if (_.isEqual(initData, form.serializeArray())) {
+				setBtnAttr(btnSubmit, true);
+			}
+			else {
+				setBtnAttr(btnSubmit, false);
+			}
+		});
+		
+		$(document).on('click', '#ticket_details_form button', function () {
+			var context = $(this);
+			
+			if (form) {
+				form.submit(function (e) {
+					e.preventDefault();
+					
+					return false;
+				});
+				
+				var data = form.serializeArray();
+				$.ajax({
+					type: "POST",
+					url: "<?php echo $block->getUrl('tasktracking/ticket/detailsave'); ?>",
+					showLoader: true,
+					data: data
+				}).done(function (transport) {
+					var message = generateMessage(transport.success, transport.message);
+					var msgContainer = $(".ticket_messages");
+					
+					msgContainer.append(message);
+					setTimeout(function () {
+						msgContainer.children().remove();
+					}, 5000);
+					
+					initData = data;
+					setBtnAttr(context, true);
+				});
+			}
+		});
+		
+		var generateMessage = function (success, message) {
+			return $("<div />", {class: success ? 't_success t_msg' : 't_error t_msg', text: message});
+		};
+		var setBtnAttr = function (btn, disabled = false) {
+			if (disabled) {
+				btn.attr("disabled", true);
+			}
+			else {
+				btn.removeAttr("disabled");
+			}
+		};
+	//]]>
+	});
+</script>

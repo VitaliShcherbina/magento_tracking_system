@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<head>
+		<css src="Tech_TaskTracking::css/view.css"/>
+	</head>
+	<body>
+		<referenceContainer name="content" htmlClass="ticket_view_container" htmlTag="div">
+			<!--<block class="Tech\TaskTracking\Block\Adminhtml\Ticket\Edit" name="admin.ticket" />-->
+			<block class="Tech\TaskTracking\Block\Adminhtml\Ticket\Info" name="admin.info" template="Tech_TaskTracking::info.phtml"/>
+			<block class="Tech\TaskTracking\Block\Adminhtml\Ticket\Message" name="admin.message" cacheable="false" template="Tech_TaskTracking::message.phtml" />
+		</referenceContainer>
+	</body>
+</page>

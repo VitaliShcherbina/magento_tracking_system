@@ -1,38 +1,44 @@
 <?php
 
-namespace Tech\TaskTracking\Block\Ticket;
+namespace Tech\TaskTracking\Block\Adminhtml\Ticket;
 
-/**
- *
- */
-class View extends \Magento\Framework\View\Element\Template {
+class Message extends \Magento\Backend\Block\Template {
 	/**
 	 *
 	 */
-	protected $_ticketFactory;
-	protected $_session;
-	protected $_messageCollection;
-	protected $_storeManager;
+	protected $_coreRegistry;
 	protected $_ticketHelper;
+	protected $_ticketFactory;
+	protected $_messageCollection;
 	
 	/**
 	 *
 	 */
 	public function __construct(
-		\Magento\Framework\View\Element\Template\Context $context,
+		\Magento\Backend\Block\Template\Context $context,
+		\Magento\Framework\Registry $registry,
 		\Tech\TaskTracking\Model\TicketFactory $ticketFactory,
-		\Magento\Customer\Model\Session $session,
 		\Tech\TaskTracking\Model\ResourceModel\Message\CollectionFactory $messageCollectionFactory,
-		\Magento\Store\Model\StoreManagerInterface $storeManager,
 		\Tech\TaskTracking\Helper\Data $ticketHelper,
 		array $data = []
 	) {
-		parent::__construct($context, $data);
+		$this->_coreRegistry      = $registry;
 		$this->_ticketFactory     = $ticketFactory;
-		$this->_session           = $session;
 		$this->_messageCollection = $messageCollectionFactory;
-		$this->_storeManager      = $storeManager;
 		$this->_ticketHelper      = $ticketHelper;
+		parent::__construct($context, $data);
+	}
+	
+	
+	/**
+	 *
+	 */
+	public function getTicketId() {
+		$ticketId = $this->_coreRegistry->registry('ticket')->getId();
+		
+		if ($ticketId) {
+			return $ticketId;
+		}
 	}
 	
 	
@@ -61,14 +67,6 @@ class View extends \Magento\Framework\View\Element\Template {
 		$ticketData['customer_name'] = $this->_ticketHelper->loadCustomerNameById($ticketData['customer_id']);
 		
 		return $ticketData;
-	}
-	
-	
-	/**
-	 *
-	 */
-	public function getSubmitAction() {
-		return '/tasktracking/ticket/messagesave';
 	}
 	
 	

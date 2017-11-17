@@ -95,11 +95,13 @@ class Collection extends GridCollection implements SearchResultInterface {
 		$departmentTable = $this->getTable('tasktracking_department');
 		$priorityTable   = $this->getTable('tasktracking_priority');
 		$statusTable     = $this->getTable('tasktracking_status');
+		$customerTable   = $this->getTable('customer_grid_flat');
 		
 		$this->getSelect()
 			 ->join($departmentTable .' as department', 'main_table.department_id = department.department_id', array('department_name' => 'department_name'))
 			 ->join($priorityTable .' as priority', 'main_table.priority_id = priority.priority_id', array('priority_value' => 'priority_value'))
-			 ->join($statusTable .' as status', 'main_table.status_id = status.status_id', array('status_value' => 'status_value'));
+			 ->join($statusTable .' as status', 'main_table.status_id = status.status_id', array('status_value' => 'status_value'))
+			 ->join($customerTable .' as customer', 'main_table.customer_id = customer.entity_id', array('created_by' => 'name'));
 		
 		parent::_renderFiltersBefore();
 	}

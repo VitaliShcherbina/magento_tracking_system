@@ -10,5 +10,6 @@
 		<add id="Tech_TaskTracking::department" title="Departments" translate="title" module="Tech_TaskTracking" sortOrder="10" parent="Tech_TaskTracking::tracking" action="tasktracking/department/index" resource="Tech_TaskTracking::tracking"/>
 		<add id="Tech_TaskTracking::status" title="Statuses" translate="title" module="Tech_TaskTracking" sortOrder="20" parent="Tech_TaskTracking::tracking" action="tasktracking/status/index" resource="Tech_TaskTracking::tracking"/>
 		<add id="Tech_TaskTracking::priority" title="Priority" translate="title" module="Tech_TaskTracking" sortOrder="30" parent="Tech_TaskTracking::tracking" action="tasktracking/priority/index" resource="Tech_TaskTracking::tracking"/>
+		<add id="Tech_TaskTracking::ticket" title="Tickets" translate="title" module="Tech_TaskTracking" sortOrder="40" parent="Tech_TaskTracking::tracking" action="tasktracking/ticket/index" resource="Tech_TaskTracking::tracking"/>
 	</menu>
 </config>

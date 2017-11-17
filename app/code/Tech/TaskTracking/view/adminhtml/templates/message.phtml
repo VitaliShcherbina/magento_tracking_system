@@ -1,0 +1,95 @@
+<?php $ticketData = $block->getTicketDataById($this->getTicketId()); ?>
+
+<div class="post_message_wrap separated" id="post_message_wrap">
+	<h2>
+		<?php echo __("Post reply"); ?>
+	</h2>
+	<div id="message_form_wrap">
+		<form id="ticket_message_form" action="<?php echo $block->getUrl('tasktracking/ticket/messagesave'); ?>" method="post" enctype="multipart/form-data" data-mage-init='{"validation": {}}'>
+			<input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
+			<input type="hidden" name="ticket_id" value="<?php echo $block->getTicketId(); ?>">
+			<p>
+				<p for="user_message"><?php echo __('Message:'); ?></p>
+				<textarea id="user_message" data-validate="{required:true}" class="validate-no-empty" name="message_text" placeholder="Message"></textarea>
+			</p>
+			<p id="wrap_inputs" data-bind="scope:'inputgroup'">
+				<label><?php echo __('Upload File'); ?></label>
+				<a href="#" id="add_input" data-bind="click: add"><?php echo __('Add File'); ?></a>
+				<div class="upload_inputs"></div>
+			</p>
+			<div class="actions-toolbar">
+				<div class="primary">
+					<button type="submit" title="Send" class="action primary ticket_btn">
+						<span><?php echo __('Send'); ?></span>
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="message_history_wrap">
+	<h2>
+		<?php echo __("Message history"); ?>
+	</h2>
+	<div class="message_content">
+		<?php if(array_key_exists('messages_data', $ticketData)): ?>
+			<?php $counter = count($ticketData['messages_data']); ?>
+			
+			<?php foreach ($ticketData['messages_data'] as $messageData): ?>
+				<div class="message_item">
+					<p>
+						<?php echo $counter . '.'; ?><span><?php echo $messageData['created_at']; ?></span>
+						<span>|</span>
+						<span><?php echo (array_key_exists('admin_name', $messageData) ? $messageData['admin_name'] : $ticketData['customer_name']); ?></span>
+					</p>
+					<p class="message_text">
+						<?php echo $messageData['message_text']; ?>
+					</p>
+					<?php if ($messageData['attachment'] != ''): ?>
+						<div class="attachments">
+							<h3><?php echo __("Attachments"); ?></h3>
+							<?php $attachments = $block->decodeData($messageData['attachment']); ?>
+							<?php if($attachments and is_array($attachments)): ?>
+								<?php foreach ($attachments as $attachment): ?>
+									<p>
+										<a href="#" class="show_attachment"><?php echo $attachment; ?></a>
+									</p>
+								<?php endforeach; ?>
+							<?php endif;?>
+						</div>
+					<?php endif; ?>
+					<?php $counter--; ?>
+				</div>
+			<?php endforeach; ?>
+		<?php else: ?>
+			<p>
+				<span><?php echo __("No Messages."); ?></span>
+			</p>
+		<?php endif; ?>
+	</div>
+</div>
+<div class="back_btn_wrap">
+	<a href="<?php echo $block->getUrl('tasktracking/ticket/index'); ?>"><?php echo __("Back"); ?></a>
+</div>
+<div id="attachment_popup" class="attachment_popup"></div>
+<script type="text/x-magento-init">
+	{
+		"#wrap_inputs": {
+			"Magento_Ui/js/core/app": {
+				"components": {
+					"inputgroup": {
+						"component": "Tech_TaskTracking/js/addInput"
+					}
+				}
+			},
+			"removeinput": {},
+			"validation": "mage/validation/validation"
+		},
+		".show_attachment": {
+			"Tech_TaskTracking/js/popup": {}
+		}
+	}
+</script>
+<script type="text/javascript">
+	window.attachmentUrl = "<?php echo $block->getAttachmentUrlByTicketId($ticketData['ticket_id']); ?>";
+</script>
