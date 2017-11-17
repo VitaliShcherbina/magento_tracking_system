@@ -11,7 +11,7 @@
 .tickets_grid td a:hover {
 	color: #757575;
 }
-.tickets_grid {
+.tickets_grid table {
 	border: 2px solid #333333;
 }
 .tickets_grid thead {

@@ -86,3 +86,9 @@
 	padding-right: 3.1rem;
 	padding-top: 3.1rem;
 }
+.clearfix:after {
+	content: '';
+	display: table;
+	width: 100%;
+	clear: both;
+}
