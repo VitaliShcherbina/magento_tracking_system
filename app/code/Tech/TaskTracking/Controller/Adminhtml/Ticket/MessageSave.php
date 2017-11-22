@@ -20,6 +20,8 @@ class MessageSave extends \Magento\Backend\App\Action {
 	protected $_fileUploaderFactory;
 	protected $_dateFactory;
 	protected $_ticketFactory;
+	protected $_dataHelper;
+	protected $_emailHelper;
 	
 	/**
 	 *
@@ -32,9 +34,10 @@ class MessageSave extends \Magento\Backend\App\Action {
 		\Magento\MediaStorage\Model\File\UploaderFactory $fileUploaderFactory,
 		\Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory,
 		\Tech\TaskTracking\Model\MessageFactory $messageFactory,
-		\Tech\TaskTracking\Model\TicketFactory $ticketFactory
-	)
-	{
+		\Tech\TaskTracking\Model\TicketFactory $ticketFactory,
+		\Tech\TaskTracking\Helper\Data $dataHelper,
+		\Tech\TaskTracking\Helper\Email $emailHelper
+	) {
 		$this->_coreRegistry        = $registry;
 		$this->_dataPersistor       = $dataPersistor;
 		$this->_mediaDirectory      = $filesystem->getDirectoryWrite(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA);
@@ -42,6 +45,8 @@ class MessageSave extends \Magento\Backend\App\Action {
 		$this->_dateFactory         = $dateFactory;
 		$this->_messageFactory      = $messageFactory;
 		$this->_ticketFactory       = $ticketFactory;
+		$this->_dataHelper          = $dataHelper;
+		$this->_emailHelper         = $emailHelper;
 		parent::__construct($context);
 	}
 	
@@ -103,6 +108,19 @@ class MessageSave extends \Magento\Backend\App\Action {
 			$this->_dataPersistor->set('tasktracking_message', $messageData);
 			
 			$this->messageManager->addSuccessMessage(__('Message for ticket ' . $message['ticket_id'] . ' has been successfully saved'));
+			
+			$emailData = $this->_dataHelper->getTicketDataById($message['ticket_id']);
+			$customerFullName = $this->_dataHelper->loadCustomerNameById($emailData['customer_id']);
+			$emailData['message_text']  = $message['message_text'];
+			$emailData['customer_name'] = $customerFullName;
+			
+			$receiverInfo = array(
+				'name'  => $customerFullName,
+				'email' => $emailData['email']
+			);
+			
+			/*$this->_emailHelper->sendTicketEmail($emailData, $receiverInfo);*/
+			$this->_emailHelper->logSendEmail(print_r($emailData, true));
 			
 			return $resultRedirect->setPath('*/*/view', array('id' => $message['ticket_id']));
 		}

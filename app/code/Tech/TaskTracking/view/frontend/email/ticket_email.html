@@ -1,0 +1,9 @@
+{{template config_path="design/email/header_template"}}
+<h3>Ticket {{var data.ticket_id|raw}} was accept.</h3>
+
+<p><b>Department:</b> {{var data.department_name|raw}}</p>
+<p><b>Priority:</b> {{var data.priority_value|raw}}</p>
+<p><b>Status:</b> {{var data.status_value|raw}}</p>
+<p><b>Message:</b> {{var data.message_text|raw}}</p>
+
+{{template config_path="design/email/footer_template"}}

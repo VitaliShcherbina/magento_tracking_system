@@ -14,6 +14,8 @@ class DetailSave extends \Magento\Backend\App\Action {
 	protected $_dateFactory;
 	protected $_resultJsonFactory;
 	protected $_ticketFactory;
+	protected $_dataHelper;
+	protected $_emailHelper;
 	
 	/**
 	 *
@@ -22,11 +24,15 @@ class DetailSave extends \Magento\Backend\App\Action {
 		Action\Context $context,
 		\Magento\Framework\Controller\ResultFactory $resultFactory,
 		\Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory,
-		\Tech\TaskTracking\Model\TicketFactory $ticketFactory
+		\Tech\TaskTracking\Model\TicketFactory $ticketFactory,
+		\Tech\TaskTracking\Helper\Data $dataHelper,
+		\Tech\TaskTracking\Helper\Email $emailHelper
 	) {
 		$this->_resultJsonFactory = $resultFactory;
 		$this->_dateFactory       = $dateFactory;
 		$this->_ticketFactory     = $ticketFactory;
+		$this->_dataHelper        = $dataHelper;
+		$this->_emailHelper       = $emailHelper;
 		parent::__construct($context);
 	}
 	
@@ -61,6 +67,18 @@ class DetailSave extends \Magento\Backend\App\Action {
 				} catch (\Exception $e) {
 					$message = __('Something went wrong while saving the ticket.');
 				}
+				
+				$emailData = $this->_dataHelper->getTicketDataById($request['ticket_id']);
+				$customerFullName = $this->_dataHelper->loadCustomerNameById($emailData['customer_id']);
+				$emailData['customer_name'] = $customerFullName;
+				
+				$receiverInfo = array(
+					'name'  => $customerFullName,
+					'email' => $emailData['email']
+				);
+				
+				/*$this->_emailHelper->sendTicketEmail($emailData, $receiverInfo);*/
+				$this->_emailHelper->logSendEmail(print_r($emailData, true));
 			}
 		}
 		else {

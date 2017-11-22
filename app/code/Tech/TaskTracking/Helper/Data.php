@@ -12,6 +12,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper {
 	protected $_priorityCollection;
 	protected $_statusCollection;
 	protected $_departmentCollection;
+	protected $_ticketFactory;
 	
 	/**
 	 *
@@ -21,13 +22,15 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper {
 		\Magento\Store\Model\StoreManagerInterface $storeManager,
 		\Tech\TaskTracking\Model\ResourceModel\Priority\CollectionFactory $priorityCollectionFactory,
 		\Tech\TaskTracking\Model\ResourceModel\Status\CollectionFactory $statusCollectionFactory,
-		\Tech\TaskTracking\Model\ResourceModel\Department\CollectionFactory $departmentCollectionFactory
+		\Tech\TaskTracking\Model\ResourceModel\Department\CollectionFactory $departmentCollectionFactory,
+		\Tech\TaskTracking\Model\TicketFactory $ticketFactory
 	) {
 		$this->_storeManager         = $storeManager;
 		$this->_customerRepository   = $customerRepositoryFactory->create();
 		$this->_priorityCollection   = $priorityCollectionFactory->create();
 		$this->_statusCollection     = $statusCollectionFactory->create();
 		$this->_departmentCollection = $departmentCollectionFactory->create();
+		$this->_ticketFactory        = $ticketFactory;
 	}
 	
 	
@@ -81,5 +84,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper {
 		$departmentData = $this->_departmentCollection->addFieldToFilter('is_active', 1)->toOptionArray();
 		
 		return $departmentData;
+	}
+	
+	
+	/**
+	 *
+	 */
+	public function getTicketDataById($ticketId) {
+		return $this->_ticketFactory->create()->load($ticketId)->getData();
 	}
 }

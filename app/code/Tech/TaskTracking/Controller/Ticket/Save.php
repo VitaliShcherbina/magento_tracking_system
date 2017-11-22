@@ -18,6 +18,11 @@ class Save extends \Magento\Framework\App\Action\Action {
 	protected $_mediaDirectory;
 	protected $_fileUploaderFactory;
 	protected $_dateFactory;
+	protected $_ticketFactory;
+	protected $_messageFactory;
+	
+	protected $_dataHelper;
+	protected $_emailHelper;
 	
 	/**
 	 *
@@ -29,7 +34,11 @@ class Save extends \Magento\Framework\App\Action\Action {
 		DataPersistorInterface $dataPersistor,
 		\Magento\Framework\Filesystem $filesystem,
 		\Magento\MediaStorage\Model\File\UploaderFactory $fileUploaderFactory,
-		\Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory
+		\Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory,
+		\Tech\TaskTracking\Model\TicketFactory $ticketFactory,
+		\Tech\TaskTracking\Model\MessageFactory $messageFactory,
+		\Tech\TaskTracking\Helper\Email $emailHelper,
+		\Tech\TaskTracking\Helper\Data $dataHelper
 	) {
 		$this->_resultPageFactory   = $resultPageFactory;
 		$this->_session             = $session;
@@ -37,6 +46,10 @@ class Save extends \Magento\Framework\App\Action\Action {
 		$this->_mediaDirectory      = $filesystem->getDirectoryWrite(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA);
 		$this->_fileUploaderFactory = $fileUploaderFactory;
 		$this->_dateFactory         = $dateFactory;
+		$this->_ticketFactory       = $ticketFactory;
+		$this->_messageFactory      = $messageFactory;
+		$this->_emailHelper         = $emailHelper;
+		$this->_dataHelper          = $dataHelper;
 		parent::__construct($context);
 	}
 	
@@ -55,7 +68,7 @@ class Save extends \Magento\Framework\App\Action\Action {
 			$data['updated_at']  = $currentDate;
 			$data['customer_id'] = $this->_session->getCustomer()->getId();
 			
-			$ticketModel = $this->_objectManager->create(\Tech\TaskTracking\Model\Ticket::class)->load(null);
+			$ticketModel = $this->_ticketFactory->create()->load(null);
 			
 			$ticketModel->setData($data);
 			
@@ -91,7 +104,9 @@ class Save extends \Magento\Framework\App\Action\Action {
 			}
 			
 			$messageData = array();
-			$messageData['ticket_id']    = $ticketModel->getId();
+			$ticketId = $ticketModel->getId();
+			
+			$messageData['ticket_id']    = $ticketId;
 			$messageData['message_text'] = $data['message_text'];
 			$messageData['created_at']   = $currentDate;
 			
@@ -102,7 +117,7 @@ class Save extends \Magento\Framework\App\Action\Action {
 				$messageData['attachment'] = null;
 			}
 			
-			$messageModel = $this->_objectManager->create(\Tech\TaskTracking\Model\Message::class)->load(null);
+			$messageModel = $this->_messageFactory->create()->load(null);
 			$messageModel->setData($messageData);
 			try {
 				$messageModel->save();
@@ -115,6 +130,20 @@ class Save extends \Magento\Framework\App\Action\Action {
 			$this->_dataPersistor->set('tasktracking_message', $messageData);
 			
 			$this->messageManager->addSuccess(__('Ticket has been successfully saved'));
+			
+			$customerFullName = $this->_dataHelper->loadCustomerNameById($data['customer_id']);
+			$emailData = $this->_dataHelper->getTicketDataById($ticketId);
+			$emailData['message_text']  = $data['message_text'];
+			$emailData['customer_name'] = $customerFullName;
+			
+			
+			$receiverInfo = array(
+				'name'  => $customerFullName,
+				'email' => $data['email']
+			);
+			
+			/*$this->_emailHelper->sendTicketEmail($emailData, $receiverInfo);*/
+			$this->_emailHelper->logSendEmail(print_r($emailData, true));
 			
 			return $resultRedirect->setPath('*/*/');
 		}
