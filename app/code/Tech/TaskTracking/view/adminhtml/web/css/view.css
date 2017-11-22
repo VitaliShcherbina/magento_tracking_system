@@ -60,6 +60,7 @@
 .message_item {
 	padding: 20px 0;
 	border-bottom: 2px solid #cccccc;
+	position: relative;
 }
 .t_info p > span:last-child {
 	float: right;
@@ -91,4 +92,12 @@
 	display: table;
 	width: 100%;
 	clear: both;
+}
+.private_message {
+	position: absolute;
+	top: 20px;
+	right: 10px;
+	background: #5F5FCE;
+	color: #ffffff;
+	padding: 0 5px;
 }

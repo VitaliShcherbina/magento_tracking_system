@@ -22,6 +22,7 @@ class MessageSave extends \Magento\Backend\App\Action {
 	protected $_ticketFactory;
 	protected $_dataHelper;
 	protected $_emailHelper;
+	protected $_authSession;
 	
 	/**
 	 *
@@ -36,7 +37,8 @@ class MessageSave extends \Magento\Backend\App\Action {
 		\Tech\TaskTracking\Model\MessageFactory $messageFactory,
 		\Tech\TaskTracking\Model\TicketFactory $ticketFactory,
 		\Tech\TaskTracking\Helper\Data $dataHelper,
-		\Tech\TaskTracking\Helper\Email $emailHelper
+		\Tech\TaskTracking\Helper\Email $emailHelper,
+		\Magento\Backend\Model\Auth\Session $authSession
 	) {
 		$this->_coreRegistry        = $registry;
 		$this->_dataPersistor       = $dataPersistor;
@@ -47,6 +49,7 @@ class MessageSave extends \Magento\Backend\App\Action {
 		$this->_ticketFactory       = $ticketFactory;
 		$this->_dataHelper          = $dataHelper;
 		$this->_emailHelper         = $emailHelper;
+		$this->_authSession         = $authSession;
 		parent::__construct($context);
 	}
 	
@@ -58,7 +61,7 @@ class MessageSave extends \Magento\Backend\App\Action {
 		$message  = $this->getRequest()->getPostValue();
 		$resultRedirect = $this->resultRedirectFactory->create();
 		
-		if ($message and array_key_exists('ticket_id', $message)) {
+		if ($message and $message['ticket_id']) {
 			$attachments = $this->getRequest()->getFiles('attachment');
 			
 			$uploadedFileNames = array();
@@ -84,6 +87,8 @@ class MessageSave extends \Magento\Backend\App\Action {
 			$messageData['ticket_id']    = $message['ticket_id'];
 			$messageData['message_text'] = $message['message_text'];
 			$messageData['created_at']   = $currentDate;
+			$messageData['is_private']   = (array_key_exists('is_private', $message)) ? $message['is_private'] : '';
+			$messageData['admin_name']   = $this->getCurrentUserName();
 			
 			if ($uploadedFileNames and count($uploadedFileNames) > 0) {
 				$messageData['attachment'] = serialize($uploadedFileNames);
@@ -129,5 +134,15 @@ class MessageSave extends \Magento\Backend\App\Action {
 			
 			return $resultRedirect->setPath('*/*/');
 		}
+	}
+	
+	
+	/**
+	 *
+	 */
+	public function getCurrentUserName() {
+		$user = $this->_authSession->getUser();
+		$userName = $user->getFirstName() . ' ' . $user->getLastName();
+		return $userName;
 	}
 }

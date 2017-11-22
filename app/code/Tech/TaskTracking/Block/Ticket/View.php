@@ -9,6 +9,8 @@ class View extends \Magento\Framework\View\Element\Template {
 	/**
 	 *
 	 */
+	const SHOW_WITHOUT_PRIVATE = 0;
+	
 	protected $_ticketFactory;
 	protected $_session;
 	protected $_messageCollection;
@@ -50,7 +52,7 @@ class View extends \Magento\Framework\View\Element\Template {
 		$ticketData = $ticketModel->getData();
 		
 		$messageCollection = $this->_messageCollection->create();
-		$messageCollection->addFieldToFilter('ticket_id', $id)->getItems();
+		$messageCollection->addFieldToFilter('ticket_id', $id)->addFieldToFilter('is_private', self::SHOW_WITHOUT_PRIVATE)->getItems();
 		
 		$messageData = $messageCollection->getData();
 		

@@ -1,4 +1,5 @@
 <?php $ticketData = $block->getTicketDataById($this->getTicketId()); ?>
+
 <div class="ticket_view_wrap">
 	<div class="ticket_head separated">
 		<h2><?php echo __("Details"); ?></h2>
@@ -54,7 +55,7 @@
 						<p>
 							<?php echo $counter . '.'; ?><span><?php echo $messageData['created_at']; ?></span>
 							<span>|</span>
-							<span><?php echo (array_key_exists('admin_name', $messageData) ? $messageData['admin_name'] : $ticketData['customer_name']); ?></span>
+							<span><?php echo ($messageData['admin_name'] ? ($messageData['admin_name'] . ' (administrator)') : $ticketData['customer_name']); ?></span>
 						</p>
 						<p class="message_text">
 							<?php echo $messageData['message_text']; ?>
