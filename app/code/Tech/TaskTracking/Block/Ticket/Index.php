@@ -47,13 +47,14 @@ class Index extends \Magento\Framework\View\Element\Template {
 		if ($ticketsItems and count($ticketsItems) > 0) {
 			foreach ($ticketsItems as $ticketsItem) {
 				$ticketsData[] = json_encode(array(
-					'ticket_id'       => $ticketsItem->getTicketId(),
+					'ticket_id'       => (int) $ticketsItem->getTicketId(),
 					'department_name' => $ticketsItem->getDepartmentName(),
 					'updated_at'      => $ticketsItem->getUpdatedAt(),
 					'priority_value'  => $ticketsItem->getPriorityValue(),
 					'status_value'    => $ticketsItem->getStatusValue()
 				));
 			}
+			$ticketsData = array_reverse($ticketsData);
 		}
 		
 		return json_encode($ticketsData);

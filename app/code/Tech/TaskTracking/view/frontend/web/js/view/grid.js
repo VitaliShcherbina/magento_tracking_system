@@ -2,9 +2,10 @@ define([
 	'jquery',
 	'ko',
 	'uiComponent',
-	'Tech_TaskTracking/js/view/grid/link'
+	'Tech_TaskTracking/js/view/grid/link',
+	'underscore'
 ],
-function ($, ko, component, linkRenderer) {
+function ($, ko, component, linkRenderer, _) {
 	"use strict";
 	
 	return component.extend({
@@ -39,13 +40,12 @@ function ($, ko, component, linkRenderer) {
 			}
 		},
 		_prepareColumns: function () {
-			
-			this.addColumn({headerText: "Ticket ID", rowText: "ticket_id", renderer: ''});
-			this.addColumn({headerText: "Department", rowText: "department_name", renderer: ''});
-			this.addColumn({headerText: "Last Updated", rowText: "updated_at", renderer: ''});
-			this.addColumn({headerText: "Priority", rowText: "priority_value", renderer: ''});
-			this.addColumn({headerText: "Status", rowText: "status_value", renderer: ''});
-			this.addColumn({headerText: "Action", rowText: "action", renderer: linkRenderer(this.ticketGridViewUrl)});
+			this.addColumn({headerText: "Ticket ID", rowText: "ticket_id", sortClass: 't_desc', renderer: ''});
+			this.addColumn({headerText: "Department", rowText: "department_name", sortClass: '', renderer: ''});
+			this.addColumn({headerText: "Last Updated", rowText: "updated_at", sortClass: '', renderer: ''});
+			this.addColumn({headerText: "Priority", rowText: "priority_value", sortClass: '', renderer: ''});
+			this.addColumn({headerText: "Status", rowText: "status_value", sortClass: '', renderer: ''});
+			this.addColumn({headerText: "Action", rowText: "action", sortClass: '', renderer: linkRenderer(this.ticketGridViewUrl)});
 		},
 		addItem: function (item) {
 			item.columns = this.columns;
@@ -53,15 +53,66 @@ function ($, ko, component, linkRenderer) {
 		},
 		addItems: function (items) {
 			for (var i in items) {
-				this.addItem(items[i]);
+				if (items.hasOwnProperty(i)) {
+					this.addItem(items[i]);
+				}
+				
 			}
 		},
 		addColumn: function (column) {
 			this.columns.push(column);
 		},
-		sortToggle: function() {
-			this.items.reverse();
-			this._render();
+		sortToggle: function(data) {
+			var sortRowName  = data.rowText;
+			if (sortRowName == 'action') {
+				return;
+			}
+			var cloneItems   = _.clone(this.items());
+			var cloneColumns = _.clone(this.columns());
+			
+			if (!data.sortClass) {
+				$.each(cloneColumns, function (key, column) {
+					if (column.rowText == sortRowName) {
+						column.sortClass = column.sortClass == 't_desc' ? 't_asc' : 't_desc';
+						data.sortClass = column.sortClass;
+					}
+					else {
+						if (column.sortClass) {
+							column.sortClass = '';
+						}
+					}
+					
+				});
+				
+				this._reRender(cloneColumns, cloneItems, data);
+			}
+			else {
+				$.each(cloneColumns, function (key, column) {
+					if (column.rowText == sortRowName) {
+						column.sortClass = column.sortClass == 't_desc' ? 't_asc' : 't_desc';
+						data.sortClass = column.sortClass;
+					}
+				});
+				
+				this._reRender(cloneColumns, cloneItems, data);
+			}
+		},
+		_reRender: function (columns, items, sortRule) {
+			var that = this;
+			that._destroyData();
+			$.each(columns, function (key, column) {
+				that.addColumn(column);
+			});
+			
+			var sorted = _.sortBy(items, sortRule.rowText);
+			that.addItems(sorted);
+			if (sortRule.sortClass == 't_desc') {
+				that.items.reverse();
+			}
+		},
+		_destroyData: function () {
+			this.columns.removeAll();
+			this.items.removeAll();
 		}
 	});
 });

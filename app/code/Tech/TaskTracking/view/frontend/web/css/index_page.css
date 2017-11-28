@@ -32,3 +32,37 @@
 .tickets_grid th:last-child, .tickets_grid td:last-child {
 	border-right: 0;
 }
+.tickets_grid thead th:not(:last-child) {
+	cursor: pointer;
+	position: relative;
+}
+.tickets_grid thead th.t_desc:after {
+	content: '';
+	position: absolute;
+	display: block;
+	right: 10px;
+	background-image: url('../images/arrow_desc.png');
+	background-size: contain;
+	width: 15px;
+	height: 15px;
+	top: 50%;
+	transform: translateY(-50%);
+}
+.tickets_grid thead th.t_asc:after {
+	content: '';
+	position: absolute;
+	display: block;
+	right: 10px;
+	background-image: url('../images/arrow_desc.png');
+	background-size: contain;
+	width: 15px;
+	height: 15px;
+	top: 50%;
+	transform: translateY(-50%) rotate(180deg);
+}
+table > thead > tr > th,
+table > tbody > tr > th,
+table > thead > tr > td,
+table > tbody > tr > td {
+	padding-right: 20px;
+}

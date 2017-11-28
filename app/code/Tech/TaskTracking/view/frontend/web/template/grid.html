@@ -7,7 +7,7 @@
 	<colgroup width="10%">
 	<thead>
 		<tr data-bind="foreach: columns">
-		<th data-bind="text: headerText"></th>
+		<th data-bind="text: headerText, click: $parent.sortToggle.bind($parent), css: sortClass ? sortClass : ''"></th>
 		</tr>
 	</thead>
 	<!-- ko ifnot: message -->
