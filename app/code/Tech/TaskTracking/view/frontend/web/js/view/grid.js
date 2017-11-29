@@ -25,15 +25,15 @@ function ($, ko, component, linkRenderer, dateRenderer, _) {
 			this._prepareItems();
 		},
 		_prepareItems: function () {
-			if (!this.ticketsGridData || this.ticketsGridData.length < 0) {
+			if (!this.ticketsGridData || this.ticketsGridData.length <= 0) {
 				this.message = 'We could not find any records.';
 			}
 			else {
 				var items = this.ticketsGridData;
 				var data = [];
 				if (items.length > 0) {
-					$.each(items, function(index, value) {
-						data.push(JSON.parse(value));
+					$.each(items, function(index, item) {
+						data.push(JSON.parse(item));
 					});
 				}
 				
