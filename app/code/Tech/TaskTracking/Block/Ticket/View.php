@@ -50,19 +50,33 @@ class View extends \Magento\Framework\View\Element\Template {
 		}
 		
 		$ticketData = $ticketModel->getData();
-		
-		$messageCollection = $this->_messageCollection->create();
-		$messageCollection->addFieldToFilter('ticket_id', $id)->addFieldToFilter('is_private', self::SHOW_WITHOUT_PRIVATE)->getItems();
-		
-		$messageData = $messageCollection->getData();
-		
-		if ($messageData and count($messageData) > 0) {
-			$ticketData['messages_data'] = array_reverse($messageData);
-		}
-		
 		$ticketData['customer_name'] = $this->_ticketHelper->loadCustomerNameById($ticketData['customer_id']);
 		
 		return $ticketData;
+	}
+	
+	
+	/**
+	 *
+	 */
+	public function getMessagesByTicketId($ticketId) {
+		$messageCollection = $this->_messageCollection->create();
+		$messageCollection
+			->addFieldToFilter('ticket_id', $ticketId)
+			->addFieldToFilter('is_private', self::SHOW_WITHOUT_PRIVATE)
+			->load();
+		
+		$messageData = array();
+		
+		foreach ($messageCollection as $item) {
+			$messageData[] = $item->getData();
+		}
+		
+		if ($messageData and count($messageData) > 0) {
+			$messageData = array_reverse($messageData);
+		}
+		
+		return $messageData;
 	}
 	
 	

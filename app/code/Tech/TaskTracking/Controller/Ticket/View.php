@@ -33,6 +33,7 @@ class View extends \Magento\Framework\App\Action\Action {
 		if ($this->_session->isLoggedIn() and $ticketId) {
 			$resultPage = $this->resultPageFactory->create();
 			$resultPage->getLayout()->getBlock('user.ticket')->setTicketId($ticketId);
+			$resultPage->getLayout()->getBlock('user.message')->setTicketId($ticketId);
 			
 			return $resultPage;
 		} else {

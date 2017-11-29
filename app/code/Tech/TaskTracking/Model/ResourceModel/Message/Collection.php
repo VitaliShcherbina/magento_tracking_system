@@ -14,4 +14,18 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 			'Tech\TaskTracking\Model\ResourceModel\Message'
 		);
 	}
+	
+	
+	/**
+	 *
+	 */
+	protected function _afterLoad() {
+		$result = parent::_afterLoad();
+		foreach ($this->_items as $item) {
+			$attachments = unserialize($item->getAttachment());
+			$item->setData('attachment', $attachments);
+		}
+		
+		return $result;
+	}
 }

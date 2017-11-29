@@ -12,6 +12,16 @@
 	padding-bottom: 30px;
 	border-bottom: 2px solid #333333;
 }
+.ticket_head h2,
+.post_message_wrap h2,
+.message_history_wrap h2 {
+	font-size: 24px;
+	color: #000000;
+	font-weight: 600;
+}
+.ticket_head p span {
+	color: #000000;
+}
 .ticket_head p > span:nth-child(odd){
 	width: 200px;
 	display: inline-block;
@@ -30,4 +40,17 @@
 }
 .attachments h3:after {
 	content: ':';
+}
+.convert_date {
+	opacity: 0;
+}
+.back_btn_wrap {
+	margin-top: 30px;
+}
+.back_btn_wrap a {
+	font-size: 1.6em;
+}
+.field_title {
+	margin-bottom: 10px;
+	display: inline-block;
 }

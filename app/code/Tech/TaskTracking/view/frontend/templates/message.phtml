@@ -1,0 +1,74 @@
+<?php $ticketData = $block->getTicketDataById($this->getTicketId()); ?>
+
+<div class="post_message_wrap separated">
+	<h2>
+		<?php echo __("Post reply"); ?>
+	</h2>
+	<form action="<?php echo $block->getSubmitAction(); ?>" method="post" enctype="multipart/form-data" data-mage-init='{"validation": {}}'>
+		<fieldset class="fieldset">
+			<input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
+			<input type="hidden" name="ticket_id" value="<?php echo $ticketData['ticket_id']; ?>">
+			<p>
+				<label for="user_message" class="field_title"><?php echo __('Message'); ?></label>
+				<textarea id="user_message" name="message_text" data-validate="{required:true}" placeholder="<?php echo __('Message'); ?>"></textarea>
+			</p>
+			<p id="wrap_inputs" data-bind="scope:'inputgroup'">
+				<label><?php echo __('Upload File'); ?></label>
+				<a href="#" id="add_input" data-bind="click: add"><?php echo __('Add File'); ?></a>
+				<div class="upload_inputs"></div>
+			</p>
+			<div class="actions-toolbar">
+				<div class="primary">
+					<button type="submit" title="Submit" class="action submit">
+						<span><?php echo __('Send'); ?></span>
+					</button>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+<div class="message_history_wrap">
+	<h2>
+		<?php echo __("Message history"); ?>
+	</h2>
+	<div class="message_content" data-bind="scope:'message-history'">
+		<!-- ko template: getTemplate() --><!-- /ko -->
+	</div>
+</div>
+<script type="text/x-magento-init">
+	{
+		"#wrap_inputs": {
+			"Magento_Ui/js/core/app": {
+				"components": {
+					"inputgroup": {
+						"component": "Tech_TaskTracking/js/addInput"
+					}
+				}
+			},
+			"removeinput": {}
+		},
+		".message_content": {
+			"Magento_Ui/js/core/app": {
+				"components": {
+					"message-history": {
+						"component": "Tech_TaskTracking/js/view/message-history",
+						"config": {
+							"customerName": "<?php echo /* @noEscape */ $ticketData['customer_name']; ?>",
+							"messagesData": <?php echo json_encode($block->getMessagesByTicketId($this->getTicketId())); ?>
+						}
+					}
+				}
+			}
+		},
+		"*": {
+			"Tech_TaskTracking/js/popup": {}
+		}
+	}
+</script>
+<div id="attachment_popup" class="attachment_popup"></div>
+<script type="text/javascript">
+	window.attachmentUrl = "<?php echo $block->getAttachmentUrlByTicketId($this->getTicketId()); ?>";
+</script>
+<div class="back_btn_wrap">
+	<a href="<?php echo $block->getUrl('tasktracking/ticket/index'); ?>"><?php echo __("Back"); ?></a>
+</div>

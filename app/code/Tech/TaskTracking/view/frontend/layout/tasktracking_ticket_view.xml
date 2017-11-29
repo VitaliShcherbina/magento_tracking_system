@@ -5,7 +5,9 @@
 	</head>
 	<body>
 		<referenceContainer name="content">
-			<block class="Tech\TaskTracking\Block\Ticket\View" name="user.ticket" template="Tech_TaskTracking::view.phtml" />
+			<block class="Tech\TaskTracking\Block\Ticket\View" name="user.ticket" template="Tech_TaskTracking::view.phtml">
+				<block class="Tech\TaskTracking\Block\Ticket\View" name="user.message" template="Tech_TaskTracking::message.phtml" />
+			</block>
 		</referenceContainer>
 	</body>
 </page>

@@ -3,9 +3,10 @@ define([
 	'ko',
 	'uiComponent',
 	'Tech_TaskTracking/js/view/grid/link',
+	'Tech_TaskTracking/js/view/grid/date',
 	'underscore'
 ],
-function ($, ko, component, linkRenderer, _) {
+function ($, ko, component, linkRenderer, dateRenderer, _) {
 	"use strict";
 	
 	return component.extend({
@@ -42,7 +43,7 @@ function ($, ko, component, linkRenderer, _) {
 		_prepareColumns: function () {
 			this.addColumn({headerText: "Ticket ID", rowText: "ticket_id", sortClass: 't_desc', renderer: ''});
 			this.addColumn({headerText: "Department", rowText: "department_name", sortClass: '', renderer: ''});
-			this.addColumn({headerText: "Last Updated", rowText: "updated_at", sortClass: '', renderer: ''});
+			this.addColumn({headerText: "Last Updated", rowText: "updated_at", sortClass: '', renderer: dateRenderer()});
 			this.addColumn({headerText: "Priority", rowText: "priority_value", sortClass: '', renderer: ''});
 			this.addColumn({headerText: "Status", rowText: "status_value", sortClass: '', renderer: ''});
 			this.addColumn({headerText: "Action", rowText: "action", sortClass: '', renderer: linkRenderer(this.ticketGridViewUrl)});
