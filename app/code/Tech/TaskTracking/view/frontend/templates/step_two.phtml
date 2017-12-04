@@ -5,6 +5,7 @@
 	</div>
 	<form action="<?php echo $block->getSubmitAction(); ?>" method="post" class="ticket_form" enctype="multipart/form-data" data-mage-init='{"validation": {}}'>
 		<fieldset class="fieldset">
+			<input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
 			<input type="hidden" name="department_id" value="<?php echo $this->getDepartmentId(); ?>">
 			<input type="hidden" name="status_id" value="<?php echo $this->getStatusId(); ?>">
 			<p>

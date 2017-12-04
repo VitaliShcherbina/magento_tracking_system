@@ -24,6 +24,8 @@ class Save extends \Magento\Framework\App\Action\Action {
 	protected $_dataHelper;
 	protected $_emailHelper;
 	
+	protected $_formKeyValidator;
+	
 	/**
 	 *
 	 */
@@ -38,7 +40,8 @@ class Save extends \Magento\Framework\App\Action\Action {
 		\Tech\TaskTracking\Model\TicketFactory $ticketFactory,
 		\Tech\TaskTracking\Model\MessageFactory $messageFactory,
 		\Tech\TaskTracking\Helper\Email $emailHelper,
-		\Tech\TaskTracking\Helper\Data $dataHelper
+		\Tech\TaskTracking\Helper\Data $dataHelper,
+		\Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
 	) {
 		$this->_resultPageFactory   = $resultPageFactory;
 		$this->_session             = $session;
@@ -50,6 +53,7 @@ class Save extends \Magento\Framework\App\Action\Action {
 		$this->_messageFactory      = $messageFactory;
 		$this->_emailHelper         = $emailHelper;
 		$this->_dataHelper          = $dataHelper;
+		$this->_formKeyValidator    = $formKeyValidator;
 		parent::__construct($context);
 	}
 	
@@ -61,6 +65,11 @@ class Save extends \Magento\Framework\App\Action\Action {
 		$resultRedirect = $this->resultRedirectFactory->create();
 		
 		if ($this->_session->isLoggedIn()) {
+			if (!$this->_formKeyValidator->validate($this->getRequest())) {
+				$this->messageManager->addErrorMessage(__('Wrong form key.'));
+				
+				return $resultRedirect->setPath('tasktracking/ticket/index');
+			}
 			$data = $this->getRequest()->getPostValue();
 			$currentDate = $this->_dateFactory->create()->gmtDate();
 			
@@ -77,7 +86,7 @@ class Save extends \Magento\Framework\App\Action\Action {
 				$this->_dataPersistor->clear('tasktracking_ticket');
 				
 			} catch (LocalizedException $e) {
-				$this->messageManager->addError($e->getMessage());
+				$this->messageManager->addErrorMessage($e->getMessage());
 			} catch (\Exception $e) {
 				$this->messageManager->addException($e, __('Something went wrong while saving the ticket.'));
 			}
@@ -98,7 +107,7 @@ class Save extends \Magento\Framework\App\Action\Action {
 							$uploadedFileNames[] = $result['file']; 
 						}
 					} catch (\Exception $e) {
-						$this->messageManager->addError($e->getMessage());
+						$this->messageManager->addErrorMessage($e->getMessage());
 					}
 				}
 			}
@@ -123,13 +132,13 @@ class Save extends \Magento\Framework\App\Action\Action {
 				$messageModel->save();
 				$this->_dataPersistor->clear('tasktracking_message');
 			} catch (LocalizedException $e) {
-				$this->messageManager->addError($e->getMessage());
+				$this->messageManager->addErrorMessage($e->getMessage());
 			} catch (\Exception $e) {
 				$this->messageManager->addException($e, __('Something went wrong while saving the message.'));
 			}
 			$this->_dataPersistor->set('tasktracking_message', $messageData);
 			
-			$this->messageManager->addSuccess(__('Ticket has been successfully saved'));
+			$this->messageManager->addSuccessMessage(__('Ticket has been successfully saved'));
 			
 			$customerFullName = $this->_dataHelper->loadCustomerNameById($data['customer_id']);
 			$emailData = $this->_dataHelper->getTicketDataById($ticketId);
