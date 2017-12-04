@@ -43,18 +43,7 @@ class Info extends \Magento\Backend\Block\Template {
 	 *
 	 */
 	public function getTicketDataById($id) {
-		$ticketModel = $this->_ticketFactory->create();
-		$ticketModel->load($id, 'ticket_id');
-		
-		if (!$ticketModel->getId()) {
-			return false;
-		}
-		
-		$ticketData = $ticketModel->getData();
-		
-		$ticketData['customer_name'] = $this->_ticketHelper->loadCustomerNameById($ticketData['customer_id']);
-		
-		return $ticketData;
+		return $this->_ticketHelper->getTicketDataById($id);
 	}
 	
 	

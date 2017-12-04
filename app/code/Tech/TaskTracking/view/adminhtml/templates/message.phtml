@@ -35,46 +35,8 @@
 	<h2>
 		<?php echo __("Message history"); ?>
 	</h2>
-	<div class="message_content">
-		<?php if(array_key_exists('messages_data', $ticketData)): ?>
-			<?php $counter = count($ticketData['messages_data']); ?>
-			
-			<?php foreach ($ticketData['messages_data'] as $messageData): ?>
-				<div class="message_item">
-					<p>
-						<?php echo $counter . '.'; ?><span><?php echo $messageData['created_at']; ?></span>
-						<span>|</span>
-						<span><?php echo ($messageData['admin_name'] ? ($messageData['admin_name'] . ' (administrator)') : $ticketData['customer_name']); ?></span>
-					</p>
-					<?php if ($messageData['is_private']): ?>
-						<p class="private_message">
-							<?php echo __('private'); ?>
-						</p>
-					<?php endif; ?>
-					<p class="message_text">
-						<?php echo $messageData['message_text']; ?>
-					</p>
-					<?php if ($messageData['attachment'] != ''): ?>
-						<div class="attachments">
-							<h3><?php echo __("Attachments"); ?></h3>
-							<?php $attachments = $block->decodeData($messageData['attachment']); ?>
-							<?php if($attachments and is_array($attachments)): ?>
-								<?php foreach ($attachments as $attachment): ?>
-									<p>
-										<a href="#" class="show_attachment"><?php echo $attachment; ?></a>
-									</p>
-								<?php endforeach; ?>
-							<?php endif;?>
-						</div>
-					<?php endif; ?>
-					<?php $counter--; ?>
-				</div>
-			<?php endforeach; ?>
-		<?php else: ?>
-			<p>
-				<span><?php echo __("No Messages."); ?></span>
-			</p>
-		<?php endif; ?>
+	<div class="message_content" data-bind="scope: 'message-history'">
+		<!-- ko template: getTemplate() --><!-- /ko -->
 	</div>
 </div>
 <div class="back_btn_wrap">
@@ -94,7 +56,20 @@
 			"removeinput": {},
 			"validation": "mage/validation/validation"
 		},
-		".show_attachment": {
+		".message_content": {
+			"Magento_Ui/js/core/app": {
+				"components": {
+					"message-history": {
+						"component": "Tech_TaskTracking/js/view/message-history",
+						"config": {
+							"customerName": "<?php echo /* @noEscape */ $ticketData['customer_name']; ?>",
+							"messagesData": <?php echo json_encode($block->getMessagesByTicketId($this->getTicketId())); ?>
+						}
+					}
+				}
+			}
+		},
+		"*": {
 			"Tech_TaskTracking/js/popup": {}
 		}
 	}

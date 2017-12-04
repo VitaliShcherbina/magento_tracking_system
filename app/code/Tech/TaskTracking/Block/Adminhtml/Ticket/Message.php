@@ -46,35 +46,15 @@ class Message extends \Magento\Backend\Block\Template {
 	 *
 	 */
 	public function getTicketDataById($id) {
-		$ticketModel = $this->_ticketFactory->create();
-		$ticketModel->load($id, 'ticket_id');
-		
-		if (!$ticketModel->getId()) {
-			return false;
-		}
-		
-		$ticketData = $ticketModel->getData();
-		
-		$messageCollection = $this->_messageCollection->create();
-		$messageCollection->addFieldToFilter('ticket_id', $id)->getItems();
-		
-		$messageData = $messageCollection->getData();
-		
-		if ($messageData and count($messageData) > 0) {
-			$ticketData['messages_data'] = array_reverse($messageData);
-		}
-		
-		$ticketData['customer_name'] = $this->_ticketHelper->loadCustomerNameById($ticketData['customer_id']);
-		
-		return $ticketData;
+		return $ticketData = $this->_ticketHelper->getTicketDataById($id);
 	}
 	
 	
 	/**
 	 *
 	 */
-	public function decodeData($data) {
-		return unserialize($data);
+	public function getMessagesByTicketId($ticketId) {
+		return $this->_ticketHelper->getMessagesByTicketId($ticketId);
 	}
 	
 	

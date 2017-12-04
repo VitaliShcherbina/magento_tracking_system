@@ -13,6 +13,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper {
 	protected $_statusCollection;
 	protected $_departmentCollection;
 	protected $_ticketFactory;
+	protected $_messageCollection;
 	
 	/**
 	 *
@@ -23,7 +24,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper {
 		\Tech\TaskTracking\Model\ResourceModel\Priority\CollectionFactory $priorityCollectionFactory,
 		\Tech\TaskTracking\Model\ResourceModel\Status\CollectionFactory $statusCollectionFactory,
 		\Tech\TaskTracking\Model\ResourceModel\Department\CollectionFactory $departmentCollectionFactory,
-		\Tech\TaskTracking\Model\TicketFactory $ticketFactory
+		\Tech\TaskTracking\Model\TicketFactory $ticketFactory,
+		\Tech\TaskTracking\Model\ResourceModel\Message\CollectionFactory $messageCollectionFactory
 	) {
 		$this->_storeManager         = $storeManager;
 		$this->_customerRepository   = $customerRepositoryFactory->create();
@@ -31,6 +33,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper {
 		$this->_statusCollection     = $statusCollectionFactory->create();
 		$this->_departmentCollection = $departmentCollectionFactory->create();
 		$this->_ticketFactory        = $ticketFactory;
+		$this->_messageCollection    = $messageCollectionFactory;
 	}
 	
 	
@@ -91,6 +94,31 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper {
 	 *
 	 */
 	public function getTicketDataById($ticketId) {
-		return $this->_ticketFactory->create()->load($ticketId)->getData();
+		$ticketData = $this->_ticketFactory->create()->load($ticketId)->getData();
+		$ticketData['customer_name'] = $this->loadCustomerNameById($ticketData['customer_id']);
+		
+		return $ticketData;
+	}
+	
+	
+	/**
+	 *
+	 */
+	public function getMessagesByTicketId($ticketId, $private = 1) {
+		$messageCollection = $this->_messageCollection->create();
+		$messageCollection->addFieldToFilter('ticket_id', $ticketId);
+		$private ? '' : $messageCollection->addFieldToFilter('is_private', $private);
+		$messageCollection->load();
+		
+		$messageData = array();
+		foreach ($messageCollection as $item) {
+			$messageData[] = $item->getData();
+		}
+		
+		if ($messageData and count($messageData) > 0) {
+			$messageData = array_reverse($messageData);
+		}
+		
+		return $messageData;
 	}
 }

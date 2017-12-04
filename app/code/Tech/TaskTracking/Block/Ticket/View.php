@@ -42,17 +42,7 @@ class View extends \Magento\Framework\View\Element\Template {
 	 *
 	 */
 	public function getTicketDataById($id) {
-		$ticketModel = $this->_ticketFactory->create();
-		$ticketModel->load($id, 'ticket_id');
-		
-		if (!$ticketModel->getId()) {
-			return false;
-		}
-		
-		$ticketData = $ticketModel->getData();
-		$ticketData['customer_name'] = $this->_ticketHelper->loadCustomerNameById($ticketData['customer_id']);
-		
-		return $ticketData;
+		return $this->_ticketHelper->getTicketDataById($id);
 	}
 	
 	
@@ -60,23 +50,7 @@ class View extends \Magento\Framework\View\Element\Template {
 	 *
 	 */
 	public function getMessagesByTicketId($ticketId) {
-		$messageCollection = $this->_messageCollection->create();
-		$messageCollection
-			->addFieldToFilter('ticket_id', $ticketId)
-			->addFieldToFilter('is_private', self::SHOW_WITHOUT_PRIVATE)
-			->load();
-		
-		$messageData = array();
-		
-		foreach ($messageCollection as $item) {
-			$messageData[] = $item->getData();
-		}
-		
-		if ($messageData and count($messageData) > 0) {
-			$messageData = array_reverse($messageData);
-		}
-		
-		return $messageData;
+		return $this->_ticketHelper->getMessagesByTicketId($ticketId, self::SHOW_WITHOUT_PRIVATE);
 	}
 	
 	
@@ -85,14 +59,6 @@ class View extends \Magento\Framework\View\Element\Template {
 	 */
 	public function getSubmitAction() {
 		return '/tasktracking/ticket/messagesave';
-	}
-	
-	
-	/**
-	 *
-	 */
-	public function decodeData($data) {
-		return unserialize($data);
 	}
 	
 	

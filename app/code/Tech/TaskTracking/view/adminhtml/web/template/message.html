@@ -1,0 +1,28 @@
+<!-- ko if: messages().length > 0 -->
+<div data-bind="foreach: messages">
+	<div class="message_item">
+		<p>
+			<span data-bind="text: $parent.convertDate(created_at, 'DD.MM.YYYY')"></span>
+			<span>|</span>
+			<span data-bind="text: admin_name ? $parent.setTitle(admin_name, 'Administrator') : $parent.customer"></span>
+		</p>
+		<!-- ko if: is_private === "1" -->
+		<p class="private_message" data-bind="i18n: 'Private'"></p>
+		<!-- /ko -->
+		<p class="message_text" data-bind="text: message_text"></p>
+		<!-- ko if: attachment -->
+		<div class="attachments" data-bind="foreach: attachment">
+			<h3 data-bind="i18n: 'Attachments'"></h3>
+			<p>
+				<a href="#" class="show_attachment" data-bind="text: $data"></a>
+			</p>
+		</div>
+		<!-- /ko -->
+	</div>
+</div>
+<!-- /ko -->
+<!-- ko ifnot: messages().length > 0 -->
+<p>
+	<span data-bind="i18n: 'No Messages.'"></span>
+</p>
+<!-- /ko -->
