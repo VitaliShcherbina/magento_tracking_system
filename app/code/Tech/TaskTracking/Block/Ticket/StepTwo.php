@@ -2,6 +2,7 @@
 
 namespace Tech\TaskTracking\Block\Ticket;
 
+use Tech\TaskTracking\Helper\Data as DataHelper;
 /**
  *
  */
@@ -9,8 +10,9 @@ class StepTwo extends \Magento\Framework\View\Element\Template {
 	/**
 	 *
 	 */
-	protected $departmentFactory;
-	protected $priorityCollectionOptions;
+	protected $_departmentFactory;
+	protected $_priorityCollectionOptions;
+	protected $_dataHelper;
 	
 	/**
 	 *
@@ -19,10 +21,12 @@ class StepTwo extends \Magento\Framework\View\Element\Template {
 		\Magento\Framework\View\Element\Template\Context $context,
 		\Tech\TaskTracking\Model\DepartmentFactory $departmentFactory,
 		\Tech\TaskTracking\Model\ResourceModel\Priority\PrioritySource\Options $priorityCollectionOptions,
+		DataHelper $dataHelper,
 		array $data = []
 	) {
-		$this->departmentFactory = $departmentFactory;
-		$this->priorityCollectionOptions = $priorityCollectionOptions;
+		$this->_departmentFactory         = $departmentFactory;
+		$this->_priorityCollectionOptions = $priorityCollectionOptions;
+		$this->_dataHelper                = $dataHelper;
 		parent::__construct($context, $data);
 	}
 	
@@ -39,7 +43,7 @@ class StepTwo extends \Magento\Framework\View\Element\Template {
 	 *
 	 */
 	public function getDepartmentNameById($id) {
-		$model = $this->departmentFactory->create();
+		$model = $this->_departmentFactory->create();
 		if ($id) {
 			$model->load($id);
 			
@@ -52,9 +56,16 @@ class StepTwo extends \Magento\Framework\View\Element\Template {
 	 *
 	 */
 	 public function getPriorityData() {
-		
-		$priorityData = $this->priorityCollectionOptions->toOptionArray();
+		$priorityData = $this->_priorityCollectionOptions->toOptionArray();
 		
 		return $priorityData;
+	}
+	
+	
+	/**
+	 *
+	 */
+	public function getMaxAttachments() {
+		return DataHelper::MAX_ATTACHMENTS;
 	}
 }

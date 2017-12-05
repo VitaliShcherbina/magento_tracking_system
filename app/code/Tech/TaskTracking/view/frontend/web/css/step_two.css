@@ -1,4 +1,7 @@
-.remove_attachment {
+.remove_attachment,
+.remove_attachment:hover,
+.remove_attachment:active,
+.remove_attachment:focus {
 	width: 20px;
 	height: 20px;
 	display: inline-block;
@@ -7,4 +10,14 @@
 	background-size: contain;
 	cursor: pointer;
 	vertical-align: bottom;
+	padding: 0;
+}
+.t_actions {
+	margin-bottom: 20px;
+}
+.attachment_item {
+	margin: 5px 0;
+}
+.t_remove {
+	float: right;
 }

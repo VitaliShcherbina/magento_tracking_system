@@ -6,6 +6,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper {
 	/**
 	 *
 	 */
+	const MAX_ATTACHMENTS = 5;
+	
 	protected $_customerRepository;
 	protected $_storeManager;
 	
@@ -63,7 +65,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper {
 	 *
 	 */
 	 public function getPriorityData() {
-		
 		$priorityData = $this->_priorityCollection->addFieldToFilter('is_active', 1)->toOptionArray();
 		
 		return $priorityData;
@@ -120,5 +121,24 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper {
 		}
 		
 		return $messageData;
+	}
+	
+	
+	/**
+	 *
+	 */
+	public function callMethodAndCheckDataInArray($value, $methodName) {
+		$query = 'get' . ucfirst(mb_strtolower($methodName)) . 'Data';
+		$data  = $this->$query();
+		
+		if ($data and count($data) > 0) {
+			foreach ($data as $item) {
+				if ($item['value'] == $value) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 }

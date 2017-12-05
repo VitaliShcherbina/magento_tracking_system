@@ -2,8 +2,6 @@
 
 namespace Tech\TaskTracking\Controller\Ticket;
 
-use Tech\TaskTracking\Model\Status;
-
 class StepTwo extends \Magento\Framework\App\Action\Action {
 	/**
 	 *
@@ -40,9 +38,7 @@ class StepTwo extends \Magento\Framework\App\Action\Action {
 				return $resultRedirect->setPath('*/*/newticket');
 			}
 			$resultPage = $this->resultPageFactory->create();
-			$resultPage->getLayout()->getBlock('ticket.step.two')
-										->setDepartmentId($id)
-										->setStatusId(Status::DEFAULT_STATUS_ID);
+			$resultPage->getLayout()->getBlock('ticket.step.two')->setDepartmentId($id);
 			
 			return $resultPage;
 		}

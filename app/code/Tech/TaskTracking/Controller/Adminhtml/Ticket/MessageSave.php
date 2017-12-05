@@ -67,6 +67,9 @@ class MessageSave extends \Magento\Backend\App\Action {
 			$uploadedFileNames = array();
 			if ($attachments and count($attachments) > 0) {
 				foreach ($attachments as $attachment) {
+					if (!$attachment['name'] || !$attachment['size']) {
+						continue;
+					}
 					try{
 						$target = $this->_mediaDirectory->getAbsolutePath('tickets/' . $message['ticket_id'] . '/');
 						$uploader = $this->_fileUploaderFactory->create(['fileId' => $attachment]);
@@ -140,7 +143,7 @@ class MessageSave extends \Magento\Backend\App\Action {
 	/**
 	 *
 	 */
-	public function getCurrentUserName() {
+	private function getCurrentUserName() {
 		$user = $this->_authSession->getUser();
 		$userName = $user->getFirstName() . ' ' . $user->getLastName();
 		return $userName;

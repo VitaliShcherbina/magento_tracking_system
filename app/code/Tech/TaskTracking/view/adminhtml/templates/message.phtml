@@ -62,7 +62,7 @@
 					"message-history": {
 						"component": "Tech_TaskTracking/js/view/message-history",
 						"config": {
-							"customerName": "<?php echo /* @noEscape */ $ticketData['customer_name']; ?>",
+							"customerName": "<?php echo $ticketData['customer_name']; ?>",
 							"messagesData": <?php echo json_encode($block->getMessagesByTicketId($this->getTicketId())); ?>
 						}
 					}

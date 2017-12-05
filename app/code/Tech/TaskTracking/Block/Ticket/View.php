@@ -2,6 +2,8 @@
 
 namespace Tech\TaskTracking\Block\Ticket;
 
+use Tech\TaskTracking\Helper\Data as DataHelper;
+
 /**
  *
  */
@@ -15,7 +17,7 @@ class View extends \Magento\Framework\View\Element\Template {
 	protected $_session;
 	protected $_messageCollection;
 	protected $_storeManager;
-	protected $_ticketHelper;
+	protected $_dataHelper;
 	
 	/**
 	 *
@@ -26,7 +28,7 @@ class View extends \Magento\Framework\View\Element\Template {
 		\Magento\Customer\Model\Session $session,
 		\Tech\TaskTracking\Model\ResourceModel\Message\CollectionFactory $messageCollectionFactory,
 		\Magento\Store\Model\StoreManagerInterface $storeManager,
-		\Tech\TaskTracking\Helper\Data $ticketHelper,
+		DataHelper $ticketHelper,
 		array $data = []
 	) {
 		parent::__construct($context, $data);
@@ -34,7 +36,7 @@ class View extends \Magento\Framework\View\Element\Template {
 		$this->_session           = $session;
 		$this->_messageCollection = $messageCollectionFactory;
 		$this->_storeManager      = $storeManager;
-		$this->_ticketHelper      = $ticketHelper;
+		$this->_dataHelper        = $ticketHelper;
 	}
 	
 	
@@ -42,7 +44,7 @@ class View extends \Magento\Framework\View\Element\Template {
 	 *
 	 */
 	public function getTicketDataById($id) {
-		return $this->_ticketHelper->getTicketDataById($id);
+		return $this->_dataHelper->getTicketDataById($id);
 	}
 	
 	
@@ -50,7 +52,7 @@ class View extends \Magento\Framework\View\Element\Template {
 	 *
 	 */
 	public function getMessagesByTicketId($ticketId) {
-		return $this->_ticketHelper->getMessagesByTicketId($ticketId, self::SHOW_WITHOUT_PRIVATE);
+		return $this->_dataHelper->getMessagesByTicketId($ticketId, self::SHOW_WITHOUT_PRIVATE);
 	}
 	
 	
@@ -66,6 +68,14 @@ class View extends \Magento\Framework\View\Element\Template {
 	 *
 	 */
 	public function getAttachmentUrlByTicketId($ticketId) {
-		return $this->_ticketHelper->getAttachmentUrlByTicketId($ticketId);
+		return $this->_dataHelper->getAttachmentUrlByTicketId($ticketId);
+	}
+	
+	
+	/**
+	 *
+	 */
+	public function getMaxAttachments() {
+		return DataHelper::MAX_ATTACHMENTS;
 	}
 }

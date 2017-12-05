@@ -1,10 +1,38 @@
 <?php $ticketData = $block->getTicketDataById($this->getTicketId()); ?>
 
+<script id="add_input_tmpl" type="text/x-magento-template">
+	<div class="actions-toolbar">
+		<div class="secondary t_remove">
+			<button type="button" id="btn-remove<%- data._index_ %>" class="remove_attachment"
+				title="<?php echo $block->escapeHtmlAttr(__('Remove Attachment')) ?>"></button>
+		</div>
+		<div class="field">
+			<div class="control">
+				<input id="attachment<%- data._index_ %>" name="attachment[]" type="file" class="attachment" multiple="multiple" accept="image" />
+			</div>
+		</div>
+	</fieldset>
+</script>
+
 <div class="post_message_wrap separated">
 	<h2>
 		<?php echo __("Post reply"); ?>
 	</h2>
-	<form action="<?php echo $block->getSubmitAction(); ?>" method="post" enctype="multipart/form-data" data-mage-init='{"validation": {}}'>
+	<form action="<?php echo $block->getSubmitAction(); ?>" method="post" enctype="multipart/form-data"
+		data-mage-init='{
+			"rowBuilder":{
+				"rowTemplate":"#add_input_tmpl",
+				"rowContainer":"#upload_inputs",
+				"rowParentElem":"<div></div>",
+				"remEventSelector":"button",
+				"btnRemoveSelector":".remove_attachment",
+				"maxRows":"<?php echo (int)$block->getMaxAttachments() ?>",
+				"maxRowsMsg":"#max_attachments_message",
+				"addRowBtn":"#add_input",
+				"additionalRowClass":"attachment_item"
+			},
+			"validation":{}
+		}'>
 		<fieldset class="fieldset">
 			<input name="form_key" type="hidden" value="<?php echo $block->getFormKey();?>">
 			<input type="hidden" name="ticket_id" value="<?php echo $ticketData['ticket_id']; ?>">
@@ -12,10 +40,24 @@
 				<label for="user_message" class="field_title"><?php echo __('Message'); ?></label>
 				<textarea id="user_message" name="message_text" data-validate="{required:true}" placeholder="<?php echo __('Message'); ?>"></textarea>
 			</p>
-			<p id="wrap_inputs" data-bind="scope:'inputgroup'">
+			<p id="wrap_inputs">
 				<label><?php echo __('Upload File'); ?></label>
-				<a href="#" id="add_input" data-bind="click: add"><?php echo __('Add File'); ?></a>
-				<div class="upload_inputs"></div>
+				
+				<div class="actions t_actions">
+					<div class="secondary">
+					<?php if ($block->getMaxAttachments() > 1): ?>
+						<button type="button" id="add_input" class="action add">
+							<span><?php echo $block->escapeHtml(__('Add Attachment')) ?></span></button>
+					<?php endif; ?>
+					</div>
+				</div>
+				<div class="upload_inputs" id="upload_inputs"></div>
+				
+				<?php if ($block->getMaxAttachments()): ?>
+					<div id="max_attachments_message" style="display: none;" class="message notice limit" role="alert">
+						<span><?php echo $block->escapeHtml(__('Maximum %1 attachments allowed.', $block->getMaxAttachments())) ?></span>
+					</div>
+				<?php endif; ?>
 			</p>
 			<div class="actions-toolbar">
 				<div class="primary">
@@ -37,23 +79,13 @@
 </div>
 <script type="text/x-magento-init">
 	{
-		"#wrap_inputs": {
-			"Magento_Ui/js/core/app": {
-				"components": {
-					"inputgroup": {
-						"component": "Tech_TaskTracking/js/addInput"
-					}
-				}
-			},
-			"removeinput": {}
-		},
 		".message_content": {
 			"Magento_Ui/js/core/app": {
 				"components": {
 					"message-history": {
 						"component": "Tech_TaskTracking/js/view/message-history",
 						"config": {
-							"customerName": "<?php echo /* @noEscape */ $ticketData['customer_name']; ?>",
+							"customerName": "<?php echo $ticketData['customer_name']; ?>",
 							"messagesData": <?php echo json_encode($block->getMessagesByTicketId($this->getTicketId())); ?>
 						}
 					}

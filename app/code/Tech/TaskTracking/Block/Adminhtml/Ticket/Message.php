@@ -2,12 +2,14 @@
 
 namespace Tech\TaskTracking\Block\Adminhtml\Ticket;
 
+use Tech\TaskTracking\Helper\Data as DataHelper;
+
 class Message extends \Magento\Backend\Block\Template {
 	/**
 	 *
 	 */
 	protected $_coreRegistry;
-	protected $_ticketHelper;
+	protected $_dataHelper;
 	protected $_ticketFactory;
 	protected $_messageCollection;
 	
@@ -19,13 +21,13 @@ class Message extends \Magento\Backend\Block\Template {
 		\Magento\Framework\Registry $registry,
 		\Tech\TaskTracking\Model\TicketFactory $ticketFactory,
 		\Tech\TaskTracking\Model\ResourceModel\Message\CollectionFactory $messageCollectionFactory,
-		\Tech\TaskTracking\Helper\Data $ticketHelper,
+		DataHelper $dataHelper,
 		array $data = []
 	) {
 		$this->_coreRegistry      = $registry;
 		$this->_ticketFactory     = $ticketFactory;
 		$this->_messageCollection = $messageCollectionFactory;
-		$this->_ticketHelper      = $ticketHelper;
+		$this->_dataHelper        = $dataHelper;
 		parent::__construct($context, $data);
 	}
 	
@@ -46,7 +48,7 @@ class Message extends \Magento\Backend\Block\Template {
 	 *
 	 */
 	public function getTicketDataById($id) {
-		return $ticketData = $this->_ticketHelper->getTicketDataById($id);
+		return $ticketData = $this->_dataHelper->getTicketDataById($id);
 	}
 	
 	
@@ -54,7 +56,7 @@ class Message extends \Magento\Backend\Block\Template {
 	 *
 	 */
 	public function getMessagesByTicketId($ticketId) {
-		return $this->_ticketHelper->getMessagesByTicketId($ticketId);
+		return $this->_dataHelper->getMessagesByTicketId($ticketId);
 	}
 	
 	
@@ -62,6 +64,11 @@ class Message extends \Magento\Backend\Block\Template {
 	 *
 	 */
 	public function getAttachmentUrlByTicketId($ticketId) {
-		return $this->_ticketHelper->getAttachmentUrlByTicketId($ticketId);
+		return $this->_dataHelper->getAttachmentUrlByTicketId($ticketId);
+	}
+	
+	
+	public function getMaxAttachments() {
+		return DataHelper::MAX_ATTACHMENTS;
 	}
 }

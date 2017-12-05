@@ -6,11 +6,15 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\TestFramework\Inspection\Exception;
+use Tech\TaskTracking\Model\Status;
 
 class Save extends \Magento\Framework\App\Action\Action {
 	/**
 	 *
 	 */
+	const DEPARTMENT = 'department';
+	const PRIORITY   = 'priority';
+	
 	protected $_resultPageFactory;
 	protected $_dataPersistor;
 	
@@ -71,90 +75,106 @@ class Save extends \Magento\Framework\App\Action\Action {
 				return $resultRedirect->setPath('tasktracking/ticket/index');
 			}
 			$data = $this->getRequest()->getPostValue();
-			$currentDate = $this->_dateFactory->create()->gmtDate();
 			
-			$data['created_at']  = $currentDate;
-			$data['updated_at']  = $currentDate;
-			$data['customer_id'] = $this->_session->getCustomer()->getId();
-			
-			$ticketModel = $this->_ticketFactory->create()->load(null);
-			
-			$ticketModel->setData($data);
-			
-			try {
-				$ticketModel->save();
-				$this->_dataPersistor->clear('tasktracking_ticket');
+			if ($data['department_id'] and
+				$data['priority_id'] and
+				$this->_dataHelper->callMethodAndCheckDataInArray($data['department_id'], self::DEPARTMENT) and 
+				$this->_dataHelper->callMethodAndCheckDataInArray($data['priority_id'], self::PRIORITY)
+			) {
+				$currentDate = $this->_dateFactory->create()->gmtDate();
 				
-			} catch (LocalizedException $e) {
-				$this->messageManager->addErrorMessage($e->getMessage());
-			} catch (\Exception $e) {
-				$this->messageManager->addException($e, __('Something went wrong while saving the ticket.'));
-			}
-			$this->_dataPersistor->set('tasktracking_ticket', $data);
-			
-			$attachments = $this->getRequest()->getFiles('attachment');
-			
-			$uploadedFileNames = array();
-			if ($attachments and count($attachments) > 0) {
-				foreach ($attachments as $attachment) {
-					try{
-						$target = $this->_mediaDirectory->getAbsolutePath('tickets/' . $ticketModel->getId() . '/');
-						$uploader = $this->_fileUploaderFactory->create(['fileId' => $attachment]);
-						$uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
-						$uploader->setAllowRenameFiles(true);
-						$result = $uploader->save($target);
-						if ($result['file']) {
-							$uploadedFileNames[] = $result['file']; 
+				$data['status_id']   = Status::DEFAULT_STATUS_ID;
+				$data['created_at']  = $currentDate;
+				$data['updated_at']  = $currentDate;
+				$data['customer_id'] = $this->_session->getCustomer()->getId();
+				
+				$ticketModel = $this->_ticketFactory->create()->load(null);
+				
+				$ticketModel->setData($data);
+				
+				try {
+					$ticketModel->save();
+					$this->_dataPersistor->clear('tasktracking_ticket');
+					
+				} catch (LocalizedException $e) {
+					$this->messageManager->addErrorMessage($e->getMessage());
+				} catch (\Exception $e) {
+					$this->messageManager->addException($e, __('Something went wrong while saving the ticket.'));
+				}
+				$this->_dataPersistor->set('tasktracking_ticket', $data);
+				
+				$attachments = $this->getRequest()->getFiles('attachment');
+				
+				$uploadedFileNames = array();
+				if ($attachments and count($attachments) > 0) {
+					foreach ($attachments as $attachment) {
+						if (!$attachment['name'] || !$attachment['size']) {
+							continue;
 						}
-					} catch (\Exception $e) {
-						$this->messageManager->addErrorMessage($e->getMessage());
+						try{
+							$target = $this->_mediaDirectory->getAbsolutePath('tickets/' . $ticketModel->getId() . '/');
+							$uploader = $this->_fileUploaderFactory->create(['fileId' => $attachment]);
+							$uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
+							$uploader->setAllowRenameFiles(true);
+							$result = $uploader->save($target);
+							if ($result['file']) {
+								$uploadedFileNames[] = $result['file']; 
+							}
+						} catch (\Exception $e) {
+							$this->messageManager->addErrorMessage($e->getMessage());
+						}
 					}
 				}
-			}
-			
-			$messageData = array();
-			$ticketId = $ticketModel->getId();
-			
-			$messageData['ticket_id']    = $ticketId;
-			$messageData['message_text'] = $data['message_text'];
-			$messageData['created_at']   = $currentDate;
-			
-			if ($uploadedFileNames and count($uploadedFileNames) > 0) {
-				$messageData['attachment'] = serialize($uploadedFileNames);
+				
+				$messageData = array();
+				$ticketId = $ticketModel->getId();
+				
+				$messageData['ticket_id']    = $ticketId;
+				$messageData['message_text'] = $data['message_text'];
+				$messageData['created_at']   = $currentDate;
+				
+				if ($uploadedFileNames and count($uploadedFileNames) > 0) {
+					$messageData['attachment'] = serialize($uploadedFileNames);
+				}
+				else {
+					$messageData['attachment'] = null;
+				}
+				
+				$messageModel = $this->_messageFactory->create()->load(null);
+				$messageModel->setData($messageData);
+				try {
+					$messageModel->save();
+					$this->_dataPersistor->clear('tasktracking_message');
+				} catch (LocalizedException $e) {
+					$this->messageManager->addErrorMessage($e->getMessage());
+				} catch (\Exception $e) {
+					$this->messageManager->addException($e, __('Something went wrong while saving the message.'));
+				}
+				$this->_dataPersistor->set('tasktracking_message', $messageData);
+				
+				$this->messageManager->addSuccessMessage(__('Ticket has been successfully saved'));
+				
+				$customerFullName = $this->_dataHelper->loadCustomerNameById($data['customer_id']);
+				$emailData = $this->_dataHelper->getTicketDataById($ticketId);
+				$emailData['message_text']  = $data['message_text'];
+				$emailData['customer_name'] = $customerFullName;
+				
+				
+				$receiverInfo = array(
+					'name'  => $customerFullName,
+					'email' => $data['email']
+				);
+				
+				/*$this->_emailHelper->sendTicketEmail($emailData, $receiverInfo);*/
+				$this->_emailHelper->logSendEmail(print_r($emailData, true));
+				
+				return $resultRedirect->setPath('*/*/');
 			}
 			else {
-				$messageData['attachment'] = null;
+				$this->messageManager->addErrorMessage(__('Wrong Department or Priority.'));
+				
+				return $resultRedirect->setPath('tasktracking/ticket/index');
 			}
-			
-			$messageModel = $this->_messageFactory->create()->load(null);
-			$messageModel->setData($messageData);
-			try {
-				$messageModel->save();
-				$this->_dataPersistor->clear('tasktracking_message');
-			} catch (LocalizedException $e) {
-				$this->messageManager->addErrorMessage($e->getMessage());
-			} catch (\Exception $e) {
-				$this->messageManager->addException($e, __('Something went wrong while saving the message.'));
-			}
-			$this->_dataPersistor->set('tasktracking_message', $messageData);
-			
-			$this->messageManager->addSuccessMessage(__('Ticket has been successfully saved'));
-			
-			$customerFullName = $this->_dataHelper->loadCustomerNameById($data['customer_id']);
-			$emailData = $this->_dataHelper->getTicketDataById($ticketId);
-			$emailData['message_text']  = $data['message_text'];
-			$emailData['customer_name'] = $customerFullName;
-			
-			
-			$receiverInfo = array(
-				'name'  => $customerFullName,
-				'email' => $data['email']
-			);
-			
-			/*$this->_emailHelper->sendTicketEmail($emailData, $receiverInfo);*/
-			$this->_emailHelper->logSendEmail(print_r($emailData, true));
-			
-			return $resultRedirect->setPath('*/*/');
 		}
 		else {
 			$this->messageManager->addNoticeMessage(__('You must be logged in.'));

@@ -78,6 +78,9 @@ class MessageSave extends \Magento\Framework\App\Action\Action {
 				$uploadedFileNames = array();
 				if ($attachments and count($attachments) > 0) {
 					foreach ($attachments as $attachment) {
+						if (!$attachment['name'] || !$attachment['size']) {
+							continue;
+						}
 						try{
 							$target = $this->_mediaDirectory->getAbsolutePath('tickets/' . $data['ticket_id'] . '/');
 							$uploader = $this->_fileUploaderFactory->create(['fileId' => $attachment]);
